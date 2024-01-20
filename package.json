@@ -1,0 +1,33 @@
+{
+    "name": "com.vitobarra.gridsystem",
+    "version": "0.1.0",
+    "displayName": "VBGridSystem",
+    "description": "VBGridSystem is a simple Grid System",
+    "unity": "2019.1",
+    "unityRelease": "0b5",
+    "documentationUrl": "",
+    "changelogUrl": "",
+    "licensesUrl": "",
+    "dependencies": {},
+    "keywords": [
+        "GridSystem",
+        "Grid",
+        "System",
+        "2D",
+        "3D",
+        "RTSgrid",
+        "CityBuilding"
+    ],
+    "author": {
+        "name": "VitoBarra",
+        "email": "vb.vitobarra@gmail.com",
+        "url": "https://github.com/VitoBarra"
+    },
+    "samples": [
+        {
+            "displayName": "VBGridSystem",
+            "description": "Contains A simple GridSystem for Object Placment",
+            "path": "Samples~/Sample"
+        }
+    ]
+}
