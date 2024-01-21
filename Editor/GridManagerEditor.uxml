@@ -1,7 +1,0 @@
-<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
-    <Style src="project://database/Assets/Main/Code/GeneralSystem/GridSystem/Editor/GridManagerEditor.uss?fileID=7433441132597879392&amp;guid=765d5cac5cfcb0d4b934e40fa53d94a9&amp;type=3#GridManagerEditor" />
-    <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: flex-start;">
-        <ui:Button text="DrawGrid" display-tooltip-when-elided="true" name="DrawGrid" tooltip="Draw the grid with the new paramether" focusable="false" />
-        <ui:EnumField type="VitoBarra.Unity.GeneralSystem.ViewType, Assembly-CSharp" view-data-key="GeneralSystem" binding-path="ViewType" />
-    </ui:VisualElement>
-</ui:UXML>

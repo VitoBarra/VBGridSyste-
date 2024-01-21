@@ -1,0 +1,9 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Packages/com.vitobarra.gridsystem/Editor/GridManagerEditor.uss?fileID=7433441132597879392&amp;guid=765d5cac5cfcb0d4b934e40fa53d94a9&amp;type=3#GridManagerEditor" />
+    <ui:VisualElement name="View" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); justify-content: center; flex-direction: column-reverse; align-self: center; align-items: flex-start; width: 100%; height: 100%;">
+        <ui:VisualElement name="CustomButton" style="flex-grow: 1; flex-direction: row; align-self: flex-start; width: 98%; margin-top: 2px; margin-right: 2px; margin-left: 2px;">
+            <ui:Button text="DrawGrid" display-tooltip-when-elided="true" name="DrawGrid" tooltip="Draw the grid with the new paramether" focusable="false" style="width: 80%; align-items: auto; flex-direction: row;" />
+            <ui:EnumField type="VitoBarra.GridSystem.ViewType, VBGridSystem" focusable="true" tabindex="1" style="width: 15%; justify-content: flex-end; flex-direction: row-reverse;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

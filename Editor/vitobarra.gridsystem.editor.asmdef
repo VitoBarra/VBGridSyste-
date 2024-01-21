@@ -1,6 +1,6 @@
 {
-    "name": "VitoBarra.GridSystem.Editor",
-    "rootNamespace": "",
+    "name": "vitobarra.gridsystem.editor",
+    "rootNamespace": "VitoBarra.GridSystem.Editor",
     "references": [
         "VBGridSystem"
     ],
