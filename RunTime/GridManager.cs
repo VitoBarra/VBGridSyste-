@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VitoBarra.GridSystem.Poco;
 
 
@@ -14,25 +15,44 @@ namespace VitoBarra.GridSystem
         public GridToWord GridToWord;
         [SerializeField] public int Width, Height;
         [SerializeField] private float TileSize;
-        [SerializeField] public Vector2 Center;
+
+        [FormerlySerializedAs("Offset")] [FormerlySerializedAs("Center")] [SerializeField]
+        public Vector2 CellOffset;
+
         [HideInInspector] public ViewType ViewType = ViewType.D2;
 
         public Action OnGridChange;
 
         //Visual Debug
-        [SerializeField]
-        private bool DrawPlaceHolder;
+        [SerializeField] private bool DrawPlaceHolder;
         private Vector3 ShapeSize;
 
-        private void Awake()
+        private Vector2Hook GridWordPositionHook;
+
+        public void UpdateGridPosition()
+        {
+            var gridWordPosition = transform.position;
+            GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
+            GridWordPositionHook.Set(gridWordPosition.x, gridWordPosition.y);
+        }
+
+
+        private void Start()
         {
             SetUp();
         }
 
+
+        private void Update()
+        {
+            UpdateGridPosition();
+        }
+
         public void SetUp()
         {
+            UpdateGridPosition();
             GridMap = new GridMap<GameObject>(Width, Height);
-            GridToWord = new GridToWord(Center, TileSize);
+            GridToWord = new GridToWord(GridWordPositionHook, TileSize, CellOffset, ViewType);
             GridToWord.SetDimension(ViewType).SetBounds(Width, Height);
         }
 
@@ -40,7 +60,7 @@ namespace VitoBarra.GridSystem
         {
             Width = width;
             Height = height;
-            Center = center;
+            CellOffset = center;
             TileSize = tileSize;
             SetUp();
         }
@@ -48,7 +68,8 @@ namespace VitoBarra.GridSystem
 
         public Vector2Int MoveBetweenCells(GridPlaceable ObjectOnGrid, Vector3 oldPosition, Vector3 newPosition)
         {
-            var oldCell = GridToWord.GetNearestCell(oldPosition);
+
+            var oldCell = ObjectOnGrid.CurrentCell;
             var newCell = GridToWord.GetNearestCell(newPosition);
             if (!oldCell.Equals(newCell))
                 GridMap.MoveLogicObject(oldCell.x, oldCell.y, newCell.x, newCell.y);
@@ -75,28 +96,21 @@ namespace VitoBarra.GridSystem
             return GridMap.GetData(i, j);
         }
 
-        public Vector2Int GetCurrentCell(Vector3 Position)
-        {
-            return GridToWord.GetNearestCell(Position);
-        }
-
 
         private void OnValidate()
         {
             if (Width <= 0) Width = 1;
             if (Height <= 0) Height = 1;
-            // if (TileSize <= 0) TileSize = 0.1f;
 
             if (GridMap == null) SetUp();
             else
             {
                 GridMap.Resize(Width, Height);
-                GridToWord.SetBounds(Width, Height).SetTileSize(TileSize).SetCenter(Center);
+                GridToWord.SetBounds(Width, Height).SetTileSize(TileSize).SetCellOffset(CellOffset);
                 OnGridChange?.Invoke();
                 ShapeSize = new Vector3(TileSize / 1.8f, TileSize / 1.8f, 0);
             }
         }
-
 
 
         public void OnDrawGizmos()
@@ -120,7 +134,7 @@ namespace VitoBarra.GridSystem
             Gizmos.DrawLine(GridToWord.GetWordPositionGridEdge(Width, 0),
                 GridToWord.GetWordPositionGridEdge(Width, Height));
 
-            if(!DrawPlaceHolder) return;
+            if (!DrawPlaceHolder) return;
 
 
             for (var i = 0; i < Width; i++)

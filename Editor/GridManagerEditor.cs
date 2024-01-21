@@ -1,6 +1,5 @@
 using UnityEditor;
 using UnityEditor.UIElements;
-using UnityEngine;
 using UnityEngine.UIElements;
 
 
@@ -9,7 +8,7 @@ namespace VitoBarra.GridSystem.Editor
     [CustomEditor(typeof(GridManager))]
     public class GridManagerEditor : UnityEditor.Editor
     {
-        public VisualTreeAsset m_InspectorXML;
+        public VisualTreeAsset InspectorXMLFile;
 
         public override VisualElement CreateInspectorGUI()
         {
@@ -19,15 +18,15 @@ namespace VitoBarra.GridSystem.Editor
             InspectorElement.FillDefaultInspector(myInspector, serializedObject, this);
 
 
-            if (m_InspectorXML == null)
-                m_InspectorXML =
+            if (InspectorXMLFile == null)
+                InspectorXMLFile =
                     AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                         "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
 
             if (target is not GridManager gridManager)
                 return myInspector;
 
-            m_InspectorXML.CloneTree(myInspector);
+            InspectorXMLFile.CloneTree(myInspector);
             var button = myInspector.Q<Button>("DrawGrid");
             button.clickable.clicked += gridManager.SetUp;
 

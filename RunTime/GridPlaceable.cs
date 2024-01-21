@@ -27,14 +27,15 @@ namespace VitoBarra.GridSystem
 
         private void OnEnable()
         {
-            transform.position = GridManager.GetNearestCenterCell(transform.position);
+            if (GridManager != null)
+                transform.position = GridManager.GetNearestCenterCell(transform.position);
         }
 
 
-        Vector2Int CurrentCell;
+        public Vector2Int CurrentCell { get;private set;  }
         private void HoldOnGrid()
         {
-           transform.position = GridManager.GetCenterCell(CurrentCell);
+            transform.position = GridManager.GetCenterCell(CurrentCell);
         }
 
         private void SnapToGrid()

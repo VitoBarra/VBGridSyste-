@@ -5,31 +5,30 @@ namespace VitoBarra.GridSystem.Poco
 {
     public class GridToWord
     {
-        private Vector2 Center;
+        private Vector2Hook WordOffset;
+        private Vector2 CellNumberOffset;
+        private ViewType ViewType;
         private float TileSize;
 
 
         int Width, Height;
-        private ViewType ViewType = ViewType.D2;
 
-        public GridToWord(Vector2 _center, float _tileSize)
+        public GridToWord(Vector2Hook wordOffset, float tileSize, Vector2 cellNumberOffset = default,
+            ViewType viewType = ViewType.D2)
         {
-            Center = _center;
-            TileSize = _tileSize;
-        }
-
-        public GridToWord(Vector2Int _center, float _tileSize, ViewType viewType) : this(
-            _center, _tileSize)
-        {
+            WordOffset = wordOffset;
+            CellNumberOffset = cellNumberOffset;
+            TileSize = tileSize;
             ViewType = viewType;
         }
 
-        public GridToWord SetBounds(int _width, int _height)
+
+        public GridToWord SetBounds(int width, int height)
         {
-            if (_width <= 0) _width = 1;
-            if (_height <= 0) _width = 1;
-            Width = _width;
-            Height = _height;
+            if (width <= 0) width = 1;
+            if (height <= 0) width = 1;
+            Width = width;
+            Height = height;
             return this;
         }
 
@@ -40,9 +39,21 @@ namespace VitoBarra.GridSystem.Poco
             return this;
         }
 
-        public GridToWord SetCenter(Vector2 center)
+        public GridToWord SetCellOffset(Vector2 cellNumberOffset)
         {
-            Center = center;
+            CellNumberOffset = cellNumberOffset;
+            return this;
+        }
+
+        public GridToWord SetWordOffset(Vector2Hook cellNumberOffset)
+        {
+            WordOffset = cellNumberOffset;
+            return this;
+        }
+
+        public GridToWord SetDimension(ViewType viewType)
+        {
+            ViewType = viewType;
             return this;
         }
 
@@ -53,12 +64,12 @@ namespace VitoBarra.GridSystem.Poco
             return new Vector3(x, y, z);
         }
 
-        private void CalculateWordPosition(out float x, out float y, out float z, int i, int j, float offset = 0)
+        private void CalculateWordPosition(out float x, out float y, out float z, int i, int j, float offset = 0f)
         {
             z = 0;
             y = 0;
-            x = (i + Center.x) * TileSize + offset;
-            var refAxis = (j + Center.y) * TileSize + offset;
+            x = (i + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
+            var refAxis = (j + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
             switch (ViewType)
             {
                 case ViewType.D2:
@@ -78,16 +89,13 @@ namespace VitoBarra.GridSystem.Poco
 
         public Vector2Int GetNearestCell(Vector3 worldPosition)
         {
-            var i = Math.Clamp(Mathf.FloorToInt((worldPosition.x - Center.x * TileSize) / TileSize), 0, Width - 1);
+            var i = Math.Clamp(
+                Mathf.FloorToInt((worldPosition.x - CellNumberOffset.x * TileSize - WordOffset.i) / TileSize), 0,
+                Width - 1);
             var refAxis = ViewType == ViewType.D2 ? worldPosition.y : worldPosition.z;
-            var j = Math.Clamp(Mathf.FloorToInt((refAxis - Center.y * TileSize) / TileSize), 0, Height - 1);
+            var j = Math.Clamp(Mathf.FloorToInt((refAxis - CellNumberOffset.y * TileSize - WordOffset.j) / TileSize), 0,
+                Height - 1);
             return new Vector2Int(i, j);
-        }
-
-        public GridToWord SetDimension(ViewType viewType)
-        {
-            ViewType = viewType;
-            return this;
         }
     }
 }
