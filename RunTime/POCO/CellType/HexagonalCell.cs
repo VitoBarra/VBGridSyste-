@@ -1,14 +1,16 @@
 ﻿namespace VitoBarra.GridSystem.POCO.CellType
 {
-    public struct SquareCell : BaseCellType
+    public struct HexagonalCell:BaseCellType
     {
         public readonly int I;
         public readonly int J;
+        public readonly int K;
 
-        public SquareCell(int i, int j)
+        public HexagonalCell(int i, int j, int k)
         {
             I = i;
             J = j;
+            K = k;
         }
     }
 }

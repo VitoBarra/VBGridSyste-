@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem.Poco
 {
@@ -58,18 +59,18 @@ namespace VitoBarra.GridSystem.Poco
         }
 
 
-        public Vector3 GetWordPositionGridEdge(int i, int j)
+        public Vector3 GetWordPositionGridEdge(SquareCell cell)
         {
-            CalculateWordPosition(out var x, out var y, out var z, i, j);
+            CalculateWordPosition(out var x, out var y, out var z, cell);
             return new Vector3(x, y, z);
         }
 
-        private void CalculateWordPosition(out float x, out float y, out float z, int i, int j, float offset = 0f)
+        private void CalculateWordPosition(out float x, out float y, out float z, SquareCell cell, float offset = 0f)
         {
             z = 0;
             y = 0;
-            x = (i + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
-            var refAxis = (j + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
+            x = (cell.I + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
+            var refAxis = (cell.J + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
             switch (ViewType)
             {
                 case ViewType.D2:
@@ -81,13 +82,13 @@ namespace VitoBarra.GridSystem.Poco
             }
         }
 
-        public Vector3 GetWordPositionCenterCell(int i, int j)
+        public Vector3 GetWordPositionCenterCell(SquareCell cell)
         {
-            CalculateWordPosition(out var x, out var y, out var z, i, j, TileSize / 2);
+            CalculateWordPosition(out var x, out var y, out var z, cell, TileSize / 2);
             return new Vector3(x, y, z);
         }
 
-        public Vector2Int GetNearestCell(Vector3 worldPosition)
+        public SquareCell GetNearestCell(Vector3 worldPosition)
         {
             var i = Math.Clamp(
                 Mathf.FloorToInt((worldPosition.x - CellNumberOffset.x * TileSize - WordOffset.i) / TileSize), 0,
@@ -95,7 +96,7 @@ namespace VitoBarra.GridSystem.Poco
             var refAxis = ViewType == ViewType.D2 ? worldPosition.y : worldPosition.z;
             var j = Math.Clamp(Mathf.FloorToInt((refAxis - CellNumberOffset.y * TileSize - WordOffset.j) / TileSize), 0,
                 Height - 1);
-            return new Vector2Int(i, j);
+            return new SquareCell(i, j);
         }
     }
 }

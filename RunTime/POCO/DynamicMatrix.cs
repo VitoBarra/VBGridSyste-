@@ -4,7 +4,7 @@ using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem.POCO
 {
-    public class DynamicMatrix<T> : ICellMemorization<T?>
+    public class DynamicMatrix<T> : ICellMemorization<T, SquareCell>
     {
         IList<IList<T>> Matrix;
 
@@ -12,7 +12,7 @@ namespace VitoBarra.GridSystem.POCO
 
         T DefaultValue;
 
-        public DynamicMatrix(int width, int height, T defaultValue = default(T))
+        public DynamicMatrix(int width, int height, T defaultValue = default)
         {
             Width = width;
             Height = height;
@@ -27,28 +27,31 @@ namespace VitoBarra.GridSystem.POCO
             }
         }
 
-        public T Get(int i, int j, int k = -1, int h = -1)
+        public T Get(SquareCell cell)
         {
-            if (!(IsValidCord(i, j)))
+            if (!(IsValidCord(cell)))
                 throw new ArgumentOutOfRangeException();
-            return Matrix[i][j];
+            return Matrix[cell.I][cell.J];
         }
 
-        public void Set(T data, int i, int j = -1, int k = -1, int h = -1)
+        public void Set(T data, SquareCell cell)
         {
-            if (!(IsValidCord(i, j)))
+            if (!(IsValidCord(cell)))
                 throw new ArgumentOutOfRangeException();
-            Matrix[i][j] = data;
-        }
-
-        public bool IsValidCord(int i, int j = -1, int k = -1, int h = -1)
-        {
-            return i >= 0 && i < Width && j >= 0 && j < Height;
+            Matrix[cell.I][cell.J] = data;
         }
 
 
-        public void Resize(int newMaxWidth, int newMaxHeight, int newMaxK = -1, int newMaxH = -1)
+        public bool IsValidCord(SquareCell cell)
         {
+            return cell.I >= 0 && cell.I < Width && cell.J >= 0 && cell.J < Height;
+        }
+
+        public void Resize(SquareCell cell)
+        {
+            var newMaxWidth = cell.I;
+            var newMaxHeight = cell.J;
+
             var widthDiff = newMaxWidth - Width;
             var heightDiff = newMaxHeight - Height;
 

@@ -1,86 +1,80 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VitoBarra.GridSystem.POCO;
 using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem.Poco
 {
-    public class GridMap
+    public sealed class GridMap<T>
     {
-        protected ICellMemorization<bool> OccupiedMap;
-        protected int Width, Height;
+        private ICellMemorization<(bool presence, T data), SquareCell> DataMap;
 
 
         public GridMap(int _width, int _height)
         {
-            Width = _width;
-            Height = _height;
-            OccupiedMap = new DynamicMatrix<bool>(_width, _height, true);
+            DataMap = new DynamicMatrix<(bool, T)>(_width, _height);
         }
 
-
-        public void OccupiesPosition(int i, int j)
+        public void ClearPosition(SquareCell cellCord)
         {
-            OccupiedMap.Set(false, i, j);
+            DataMap.Set((false, default), cellCord);
         }
 
-        public virtual void ClearPosition(int i, int j)
+        public bool IsPositionFree(SquareCell cellCord)
         {
-            OccupiedMap.Set(true, i, j);
+            return !DataMap.Get(cellCord).presence;
         }
 
-
-        public bool IsPositionFree(int i, int z)
+        public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
         {
-            return OccupiedMap.Get(i, z);
-        }
-    }
-
-    public class GridMap<T> : GridMap
-    {
-        private ICellMemorization<T> DataMap;
-
-        public GridMap(int _width, int _height) : base(_width, _height)
-        {
-            DataMap = new DynamicMatrix<T>(_width, _height);
+            if (!IsPositionFree(cellCord) && !force) throw new Exception("Position already occupied");
+            DataMap.Set((true, data), cellCord);
         }
 
-        public void OccupiesPosition(int i, int j, T data, bool force = false)
+        public void MoveLogicObject(SquareCell oldSquareCell, SquareCell newSquareCell, bool force = false)
         {
-            if (DataMap.Get(i, j) != null && !force) throw new Exception("Position already occupied");
-            OccupiesPosition(i, j);
-            DataMap.Set(data, i, j);
+            var oldCellData = DataMap.Get(oldSquareCell).data;
+            ClearPosition(oldSquareCell);
+            OccupiesPosition(oldCellData, newSquareCell, force);
         }
 
-        public override void ClearPosition(int i, int j)
+        public void MoveLogicObject(IList<SquareCell> oldSquareCell, IList<SquareCell> newSquareCell,
+            bool force = false)
         {
-            base.ClearPosition(i, j);
-            DataMap.Set(default, i, j);
+            var oldCellsData = new List<(bool, T data)>();
+            for (var index = 0; index < oldSquareCell.Count; index++)
+            {
+                var oldCell = oldSquareCell[index];
+                oldCellsData.Add(DataMap.Get(oldCell));
+                ClearPosition(oldCell);
+            }
+
+            for (int i = 0; i < newSquareCell.Count; i++)
+            {
+                OccupiesPosition(oldCellsData[i].data, newSquareCell[i], force);
+            }
         }
 
-
-        public void MoveLogicObject(int i1, int j1, int i2, int j2)
+        public T GetData(SquareCell cell)
         {
-            OccupiesPosition(i2, j2, DataMap.Get(i1, j1));
-            ClearPosition(i1, j1);
-        }
-
-        public T GetData(int i, int j)
-        {
-            return DataMap.Get(i, j);
-        }
-
-        public (bool Pos, T Data) GetAllData(int i, int j)
-        {
-            return (OccupiedMap.Get(i, j), DataMap.Get(i, j));
+            return DataMap.Get(cell).data;
         }
 
         public void Resize(int width, int height)
         {
-            Width = width;
-            Height = height;
-            OccupiedMap.Resize(width, height);
-            DataMap.Resize(width, height);
+            DataMap.Resize(new SquareCell(width, height));
+        }
+
+        public bool IsTheSame(SquareCell cell, T data)
+        {
+            var data1 = DataMap.Get(cell).data;
+            return data1 != null && data1.Equals(data);
+        }
+
+        public bool IsValidCord(SquareCell newCell)
+        {
+            return DataMap.IsValidCord(newCell);
         }
     }
 }

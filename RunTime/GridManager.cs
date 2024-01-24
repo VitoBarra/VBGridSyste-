@@ -1,9 +1,9 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 using VitoBarra.GridSystem.Poco;
+using VitoBarra.GridSystem.POCO.CellType;
 
 
 namespace VitoBarra.GridSystem
@@ -11,13 +11,10 @@ namespace VitoBarra.GridSystem
     [ExecuteInEditMode]
     public class GridManager : MonoBehaviour
     {
-        public GridMap<GameObject> GridMap;
-        public GridToWord GridToWord;
         [SerializeField] public int Width, Height;
         [SerializeField] private float TileSize;
 
-        [FormerlySerializedAs("Offset")] [FormerlySerializedAs("Center")] [SerializeField]
-        public Vector2 CellOffset;
+        [SerializeField] public Vector2 CellOffset;
 
         [HideInInspector] public ViewType ViewType = ViewType.D2;
 
@@ -25,17 +22,12 @@ namespace VitoBarra.GridSystem
 
         //Visual Debug
         [SerializeField] private bool DrawPlaceHolder;
-        private Vector3 ShapeSize;
 
         private Vector2Hook GridWordPositionHook;
 
-        public void UpdateGridPosition()
-        {
-            var gridWordPosition = transform.position;
-            GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
-            GridWordPositionHook.Set(gridWordPosition.x, gridWordPosition.y);
-        }
 
+        private SquareGrid<GameObject> SquareGrid;
+        private Vector3 ShapeSize;
 
         private void Start()
         {
@@ -51,49 +43,44 @@ namespace VitoBarra.GridSystem
         public void SetUp()
         {
             UpdateGridPosition();
-            GridMap = new GridMap<GameObject>(Width, Height);
-            GridToWord = new GridToWord(GridWordPositionHook, TileSize, CellOffset, ViewType);
-            GridToWord.SetDimension(ViewType).SetBounds(Width, Height);
-        }
-
-        public void ResetMap(int width, int height, Vector2Int center, float tileSize)
-        {
-            Width = width;
-            Height = height;
-            CellOffset = center;
-            TileSize = tileSize;
-            SetUp();
+            SquareGrid ??=
+                new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewType);
         }
 
 
-        public Vector2Int MoveBetweenCells(GridPlaceable ObjectOnGrid, Vector3 oldPosition, Vector3 newPosition)
+        public SquareCell GetNearestCell(Vector3 position)
         {
-
-            var oldCell = ObjectOnGrid.CurrentCell;
-            var newCell = GridToWord.GetNearestCell(newPosition);
-            if (!oldCell.Equals(newCell))
-                GridMap.MoveLogicObject(oldCell.x, oldCell.y, newCell.x, newCell.y);
-            ObjectOnGrid.transform.position = GridToWord.GetWordPositionCenterCell(newCell.x, newCell.y);
-            return newCell;
+            return SquareGrid.GetNearestCell(position);
         }
 
-        public Vector3 GetNearestCenterCell(Vector3 position)
+        public bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells,
+            GameObject placeable)
         {
-            if (GridToWord == null) return position;
-            Vector2Int generatedCell = GridToWord.GetNearestCell(position);
-            return GridToWord.GetWordPositionCenterCell(generatedCell.x, generatedCell.y);
+            return SquareGrid.MoveBetweenCells(oldCells, NewCells, placeable);
+        }
+
+        public Vector3 GetNearestCellCenter(Vector3 position)
+        {
+            return SquareGrid?.GetNearestCellCenter(position) ?? position;
         }
 
 
-        public void OccupiesPosition(GameObject gameObject)
+        public void OccupiesPosition(GameObject placeable, IList<SquareCell> cellToOccupy)
         {
-            var generatedCell = GridToWord.GetNearestCell(gameObject.transform.position);
-            GridMap.OccupiesPosition(generatedCell.x, generatedCell.y, gameObject);
+            foreach (var cell in cellToOccupy)
+                SquareGrid.OccupiesPosition(placeable.gameObject, cell);
         }
 
-        public UnityEngine.Object GetData(int i, int j)
+        public Vector3 GetCenterCell(SquareCell cell)
         {
-            return GridMap.GetData(i, j);
+            return SquareGrid.GetWordPositionCenterCell(cell);
+        }
+
+        public void UpdateGridPosition()
+        {
+            var gridWordPosition = transform.position;
+            GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
+            GridWordPositionHook.Set(gridWordPosition.x, gridWordPosition.y);
         }
 
 
@@ -102,11 +89,10 @@ namespace VitoBarra.GridSystem
             if (Width <= 0) Width = 1;
             if (Height <= 0) Height = 1;
 
-            if (GridMap == null) SetUp();
+            if (SquareGrid == null) SetUp();
             else
             {
-                GridMap.Resize(Width, Height);
-                GridToWord.SetBounds(Width, Height).SetTileSize(TileSize).SetCellOffset(CellOffset);
+                SquareGrid.Resize(Width, Height).SetWorldInformation(TileSize, CellOffset);
                 OnGridChange?.Invoke();
                 ShapeSize = new Vector3(TileSize / 1.8f, TileSize / 1.8f, 0);
             }
@@ -115,24 +101,24 @@ namespace VitoBarra.GridSystem
 
         public void OnDrawGizmos()
         {
-            if (GridMap == null) return;
+            if (SquareGrid == null) return;
 
 
             for (var i = 0; i < Width; i++)
             {
                 for (var j = 0; j < Height; j++)
                 {
-                    Gizmos.DrawLine(GridToWord.GetWordPositionGridEdge(i, j),
-                        GridToWord.GetWordPositionGridEdge(i, j + 1));
-                    Gizmos.DrawLine(GridToWord.GetWordPositionGridEdge(i, j),
-                        GridToWord.GetWordPositionGridEdge(i + 1, j));
+                    Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(i, j),
+                        SquareGrid.GetWordPositionGridEdge(i, j + 1));
+                    Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(i, j),
+                        SquareGrid.GetWordPositionGridEdge(i + 1, j));
                 }
             }
 
-            Gizmos.DrawLine(GridToWord.GetWordPositionGridEdge(0, Height),
-                GridToWord.GetWordPositionGridEdge(Width, Height));
-            Gizmos.DrawLine(GridToWord.GetWordPositionGridEdge(Width, 0),
-                GridToWord.GetWordPositionGridEdge(Width, Height));
+            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(0, Height),
+                SquareGrid.GetWordPositionGridEdge(Width, Height));
+            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(Width, 0),
+                SquareGrid.GetWordPositionGridEdge(Width, Height));
 
             if (!DrawPlaceHolder) return;
 
@@ -141,16 +127,11 @@ namespace VitoBarra.GridSystem
             {
                 for (var j = 0; j < Height; j++)
                 {
-                    Gizmos.color = GridMap.IsPositionFree(i, j) ? Color.green : Color.red;
-                    Gizmos.DrawCube(GridToWord.GetWordPositionCenterCell(i, j), ShapeSize);
+                    var cell = new SquareCell(i, j);
+                    Gizmos.color = SquareGrid.IsPositionFree(cell) ? Color.green : Color.red;
+                    Gizmos.DrawCube(SquareGrid.GetWordPositionCenterCell(cell), ShapeSize);
                 }
             }
-        }
-
-
-        public Vector3 GetCenterCell(Vector2Int currentCell)
-        {
-            return GridToWord.GetWordPositionCenterCell(currentCell.x, currentCell.y);
         }
     }
 }

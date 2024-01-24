@@ -1,11 +1,11 @@
 ﻿namespace VitoBarra.GridSystem.POCO.CellType
 {
-    public interface ICellMemorization<T>
+    public interface ICellMemorization<T,C> where C:BaseCellType
     {
-        T? Get(int i, int j=-1,int k=-1, int h=-1);
-        void Set(T data,int i, int j=-1,int k=-1, int h=-1);
-        void Resize(int newMaxI, int newMaxJ=-1,int newMaxK=-1, int newMaxH=-1);
+        T Get(C cell);
+        void Set(T data,C cell);
+        void Resize(C cell);
 
-        bool IsValidCord(int i, int j=-1,int k=-1, int h=-1);
+        bool IsValidCord(C cell);
     }
 }
