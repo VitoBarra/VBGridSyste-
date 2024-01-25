@@ -19,9 +19,9 @@ namespace VitoBarra.GridSystem.Editor
 
 
             if (InspectorXMLFile == null)
-                InspectorXMLFile =
-                    AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                        "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
+                InspectorXMLFile = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>( "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
+
+
 
             if (target is not GridManager gridManager)
                 return myInspector;
