@@ -4,7 +4,7 @@ using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem.POCO
 {
-    public class DynamicMatrix<T> : ICellMemorization<T, SquareCell>
+    public class DynamicMatrix<T>
     {
         IList<IList<T>> Matrix;
 
@@ -27,31 +27,28 @@ namespace VitoBarra.GridSystem.POCO
             }
         }
 
-        public T Get(SquareCell cell)
+        public T Get(int i, int j)
         {
-            if (!(IsValidCord(cell)))
+            if (!(IsValidCord(i, j)))
                 throw new ArgumentOutOfRangeException();
-            return Matrix[cell.I][cell.J];
+            return Matrix[i][j];
         }
 
-        public void Set(T data, SquareCell cell)
+        public void Set(T data, int i, int j)
         {
-            if (!(IsValidCord(cell)))
+            if (!(IsValidCord(i, j)))
                 throw new ArgumentOutOfRangeException();
-            Matrix[cell.I][cell.J] = data;
+            Matrix[i][j] = data;
         }
 
 
-        public bool IsValidCord(SquareCell cell)
+        public bool IsValidCord(int i, int j)
         {
-            return cell.I >= 0 && cell.I < Width && cell.J >= 0 && cell.J < Height;
+            return i >= 0 && i < Width && j >= 0 && j < Height;
         }
 
-        public void Resize(SquareCell cell)
+        public void Resize(int newMaxWidth, int newMaxHeight)
         {
-            var newMaxWidth = cell.I;
-            var newMaxHeight = cell.J;
-
             var widthDiff = newMaxWidth - Width;
             var heightDiff = newMaxHeight - Height;
 

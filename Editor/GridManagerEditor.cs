@@ -13,25 +13,26 @@ namespace VitoBarra.GridSystem.Editor
         public override VisualElement CreateInspectorGUI()
         {
             // Create a new VisualElement to be the root of our inspector UI
-            VisualElement myInspector = new VisualElement();
+            VisualElement finalInspector = new VisualElement();
 
-            InspectorElement.FillDefaultInspector(myInspector, serializedObject, this);
+            InspectorElement.FillDefaultInspector(finalInspector, serializedObject, this);
 
 
             if (InspectorXMLFile == null)
-                InspectorXMLFile = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>( "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
-
+                InspectorXMLFile =
+                    AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
+                        "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
 
 
             if (target is not GridManager gridManager)
-                return myInspector;
+                return finalInspector;
 
-            InspectorXMLFile.CloneTree(myInspector);
-            var button = myInspector.Q<Button>("DrawGrid");
+            InspectorXMLFile.CloneTree(finalInspector);
+            var button = finalInspector.Q<Button>("DrawGrid");
             button.clickable.clicked += gridManager.SetUp;
 
             // Return the finished inspector UI
-            return myInspector;
+            return finalInspector;
         }
     }
 }

@@ -14,9 +14,9 @@ namespace VitoBarra.GridSystem.Editor
         public override VisualElement CreateInspectorGUI()
         {
             // Create a new VisualElement to be the root of our inspector UI
-            VisualElement myInspector = new VisualElement();
+            VisualElement finalInspector = new VisualElement();
 
-            InspectorElement.FillDefaultInspector(myInspector, serializedObject, this);
+            InspectorElement.FillDefaultInspector(finalInspector, serializedObject, this);
 
 
             if (InspectorXMLFile == null)
@@ -25,14 +25,14 @@ namespace VitoBarra.GridSystem.Editor
 
 
             if (target is not SquareGridPlaceable gridManager)
-                return myInspector;
+                return finalInspector;
 
-            // InspectorXMLFile.CloneTree(myInspector);
+            InspectorXMLFile.CloneTree(finalInspector);
             // var button = myInspector.Q<Button>("DrawGrid");
             // button.clickable.clicked += gridManager.SetUp;
 
             // Return the finished inspector UI
-            return myInspector;
+            return finalInspector;
         }
     }
 }
