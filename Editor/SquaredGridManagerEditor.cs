@@ -5,17 +5,17 @@ using UnityEngine.UIElements;
 
 namespace VitoBarra.GridSystem.Editor
 {
-    [CustomEditor(typeof(GridManager))]
-    public class GridManagerEditor : UnityEditor.Editor
+    [CustomEditor(typeof(SquaredGridManager))]
+    public class SquaredGridManagerEditor : UnityEditor.Editor
     {
         public VisualTreeAsset InspectorXMLFile;
 
         public override VisualElement CreateInspectorGUI()
         {
             // Create a new VisualElement to be the root of our inspector UI
-            VisualElement myInspector = new VisualElement();
+            VisualElement finalInspector = new VisualElement();
 
-            InspectorElement.FillDefaultInspector(myInspector, serializedObject, this);
+            InspectorElement.FillDefaultInspector(finalInspector, serializedObject, this);
 
 
             if (InspectorXMLFile == null)
@@ -23,15 +23,15 @@ namespace VitoBarra.GridSystem.Editor
                     AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                         "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
 
-            if (target is not GridManager gridManager)
-                return myInspector;
+            if (target is not SquaredGridManager gridManager)
+                return finalInspector;
 
-            InspectorXMLFile.CloneTree(myInspector);
-            var button = myInspector.Q<Button>("DrawGrid");
+            InspectorXMLFile.CloneTree(finalInspector);
+            var button = finalInspector.Q<Button>("DrawGrid");
             button.clickable.clicked += gridManager.SetUp;
 
             // Return the finished inspector UI
-            return myInspector;
+            return finalInspector;
         }
     }
 }

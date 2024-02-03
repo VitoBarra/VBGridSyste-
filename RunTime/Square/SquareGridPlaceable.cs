@@ -8,10 +8,10 @@ using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem
 {
-    public class SquareGridPlaceable : MonoBehaviour
+    public class SquareGridPlaceable : GridSnappable<SquareCell>
     {
-        GridManager GridManager;
-        private SquareCell PinCell { get; set; }
+        SquaredGridManager GridManager;
+
         public int VerticalMaxSpan = 1;
         public int HorizontalMaxSpan = 1;
         public List<bool> PositionBitMap;
@@ -19,7 +19,7 @@ namespace VitoBarra.GridSystem
 
         private void Awake()
         {
-            GridManager = GetComponentInParent<GridManager>();
+            GridManager = GetComponentInParent<SquaredGridManager>();
         }
 
         private void Start()
@@ -39,18 +39,30 @@ namespace VitoBarra.GridSystem
         }
 
 
-        private void HoldOnGrid()
+        protected override void HoldOnGrid()
         {
             transform.position = GridManager.GetCenterCell(PinCell);
         }
 
-        private void SnapToGrid()
+        protected override void SnapToGrid()
         {
             var IsMovementPossibile = GridManager.MoveBetweenCells(GetPositionToOccupy(PinCell),
                 GetPositionToOccupy(NearestCell), gameObject);
             if (IsMovementPossibile)
                 PinCell = NearestCell;
             transform.position = GridManager.GetCenterCell(PinCell);
+            OnCellSet.Invoke(PinCell);
+        }
+        protected override IList<SquareCell> GetPositionToOccupy(SquareCell generatedCell)
+        {
+            var result = new List<SquareCell>();
+
+            for (int i = 0; i < VerticalMaxSpan; i++)
+            for (int j = 0; j < HorizontalMaxSpan; j++)
+                if (PositionBitMap[i * HorizontalMaxSpan + j])
+                    result.Add(new SquareCell(generatedCell.I + i, generatedCell.J + j));
+
+            return result;
         }
 
 
@@ -90,16 +102,5 @@ namespace VitoBarra.GridSystem
             }
         }
 
-        private IList<SquareCell> GetPositionToOccupy(SquareCell generatedCell)
-        {
-            var result = new List<SquareCell>();
-
-            for (int i = 0; i < VerticalMaxSpan; i++)
-            for (int j = 0; j < HorizontalMaxSpan; j++)
-                if (PositionBitMap[i * HorizontalMaxSpan + j])
-                    result.Add(new SquareCell(generatedCell.I + i, generatedCell.J + j));
-
-            return result;
-        }
     }
 }

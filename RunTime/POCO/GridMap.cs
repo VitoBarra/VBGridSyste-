@@ -11,9 +11,9 @@ namespace VitoBarra.GridSystem.Poco
         private ICellMemorization<(bool presence, T data), SquareCell> DataMap;
 
 
-        public GridMap(int _width, int _height)
+        public GridMap(int _width, int _height,T defaultValue=default)
         {
-            DataMap = new DynamicMatrix<(bool, T)>(_width, _height);
+            DataMap = new SquareCellMatrix<(bool presence, T data)>(_width, _height, (false, defaultValue));
         }
 
         public void ClearPosition(SquareCell cellCord)
