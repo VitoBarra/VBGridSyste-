@@ -1,6 +1,6 @@
 ﻿namespace VitoBarra.GridSystem.POCO.CellType
 {
-    public struct HexagonalCell:BaseCellType
+    public struct HexagonalCell:ICellType
     {
         public readonly int I;
         public readonly int J;

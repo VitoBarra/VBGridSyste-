@@ -1,6 +1,6 @@
 ﻿namespace VitoBarra.GridSystem.POCO.CellType
 {
-    public interface ICellMemorization<T,C> where C:BaseCellType
+    public interface ICellMemorization<T,C> where C:ICellType
     {
         T Get(C cell);
         void Set(T data,C cell);

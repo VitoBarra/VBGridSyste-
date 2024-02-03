@@ -5,8 +5,8 @@ using UnityEngine.UIElements;
 
 namespace VitoBarra.GridSystem.Editor
 {
-    [CustomEditor(typeof(GridManager))]
-    public class GridManagerEditor : UnityEditor.Editor
+    [CustomEditor(typeof(SquaredGridManager))]
+    public class SquaredGridManagerEditor : UnityEditor.Editor
     {
         public VisualTreeAsset InspectorXMLFile;
 
@@ -23,8 +23,7 @@ namespace VitoBarra.GridSystem.Editor
                     AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
                         "Packages/com.vitobarra.gridsystem/Editor/UI/GridManagerEditor.uxml");
 
-
-            if (target is not GridManager gridManager)
+            if (target is not SquaredGridManager gridManager)
                 return finalInspector;
 
             InspectorXMLFile.CloneTree(finalInspector);
