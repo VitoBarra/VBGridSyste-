@@ -1,7 +1,9 @@
 {
     "name": "VBGridSystem",
     "rootNamespace": "VitoBarra.GridSystem",
-    "references": [],
+    "references": [
+        "GUID:a32955e2159053a40b0f1d59ac34804c"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

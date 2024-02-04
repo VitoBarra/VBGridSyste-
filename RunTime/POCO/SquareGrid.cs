@@ -50,6 +50,10 @@ namespace VitoBarra.GridSystem.Poco
 
 
         #region DataLogic
+        public T GetData(SquareCell cellCord)
+        {
+            return LogicGridMap.GetData(cellCord);
+        }
 
         public bool IsPositionFree(SquareCell cellCord)
         {
@@ -70,9 +74,21 @@ namespace VitoBarra.GridSystem.Poco
         }
 
 
-        private bool IsMovementPossible(IList<SquareCell> oldCell, IList<SquareCell> newPosition, T data)
+        private bool IsMovementPossible(IList<SquareCell> oldCells, IList<SquareCell> newPosition, T data)
         {
-            return !oldCell.Where((t, i) => !IsMovementPossible(t, newPosition[i], data)).Any();
+            var oldCellsData = new List<T>();
+            foreach (var cell in oldCells)
+            {
+                oldCellsData.Add(LogicGridMap.GetData(cell));
+                LogicGridMap.ClearPosition(cell);
+            }
+
+            var isMovementPossible = !oldCells.Where((t, i) => !IsMovementPossible(t, newPosition[i], data)).Any();
+
+            for (int i = 0; i < oldCells.Count; i++)
+                LogicGridMap.OccupiesPosition(oldCellsData[i], oldCells[i]);
+
+            return isMovementPossible;
         }
 
 

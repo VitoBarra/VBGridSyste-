@@ -1,10 +1,13 @@
 {
   "name": "com.vitobarra.gridsystem",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "displayName": "VBGridSystem",
   "description": "VBGridSystem is a simple Grid System",
   "unity": "2022.1",
   "unityRelease": "0b5",
+  "dependencies": {
+    "com.vitobarra.generalutility": "https://github.com/VitoBarra/VBGeneralUtility.git#v0.0.1"
+  },
   "documentationUrl": "",
   "changelogUrl": "",
   "licensesUrl": "",
@@ -17,6 +20,14 @@
     "RTSgrid",
     "CityBuilding"
   ],
+  "bugs": {
+    "url": "https://github.com/VitoBarra/VBGridSystem/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://https://github.com/VitoBarra/VBGridSystem.git"
+  },
+  "license": "MIT",
   "author": {
     "name": "VitoBarra",
     "email": "vb.vitobarra@gmail.com",

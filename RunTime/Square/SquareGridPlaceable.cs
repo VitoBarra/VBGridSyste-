@@ -8,6 +8,7 @@ using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem
 {
+    [ExecuteInEditMode]
     public class SquareGridPlaceable : GridSnappable<SquareCell>
     {
         SquaredGridManager GridManager;
@@ -24,6 +25,8 @@ namespace VitoBarra.GridSystem
 
         private void Start()
         {
+            if(GridManager == null) return;
+
             GridManager.OnGridChange += HoldOnGrid;
             var generatedCell = NearestCell;
             transform.position = GridManager.GetCenterCell(generatedCell);
@@ -51,7 +54,7 @@ namespace VitoBarra.GridSystem
             if (IsMovementPossibile)
                 PinCell = NearestCell;
             transform.position = GridManager.GetCenterCell(PinCell);
-            OnCellSet.Invoke(PinCell);
+            OnCellSet?.Invoke(PinCell);
         }
         protected override IList<SquareCell> GetPositionToOccupy(SquareCell generatedCell)
         {
@@ -81,6 +84,7 @@ namespace VitoBarra.GridSystem
 
         private void OnDestroy()
         {
+            if (GridManager == null) return;
             GridManager.OnGridChange -= HoldOnGrid;
         }
 

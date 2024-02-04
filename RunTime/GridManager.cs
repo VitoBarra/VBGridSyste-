@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using VitoBarra.GridSystem.Poco;
-using VitoBarra.GridSystem.POCO.CellType;
-
+using VitoBarra.GeneralUtility.FeatureFullValue;
 
 namespace VitoBarra.GridSystem
 {
@@ -14,6 +11,7 @@ namespace VitoBarra.GridSystem
         //Visual Debug
         [SerializeField] protected bool DrawPlaceHolder;
         [SerializeField] protected float TileSize;
+        [SerializeField] protected TraceableValue<float> TileSizeTrac;
         [HideInInspector] public ViewType ViewType = ViewType.D2;
         public Action OnGridChange;
 

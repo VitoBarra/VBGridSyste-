@@ -1,4 +1,4 @@
-﻿using VitoBarra.GridSystem.POCO;
+﻿using VitoBarra.GeneralUtility.DataStructure;
 using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem

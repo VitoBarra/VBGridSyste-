@@ -2,7 +2,8 @@
     "name": "vitobarra.gridsystem.editor",
     "rootNamespace": "VitoBarra.GridSystem.Editor",
     "references": [
-        "VBGridSystem"
+        "VBGridSystem",
+        "VBGeneralUtility"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -1,24 +1,35 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using VitoBarra.GridSystem.Poco;
 using VitoBarra.GridSystem.POCO.CellType;
+using VitoBarra.GeneralUtility.FeatureFullValue;
 
 namespace VitoBarra.GridSystem
 {
+    [ExecuteInEditMode]
     public class SquaredGridManager : GridManager<SquareCell, GameObject>
     {
-
+        private TraceableInt WidthTrac, HeightTrac;
         [SerializeField] public int Width, Height;
 
 
+        private TraceableValue<Vector2> CellOffsetTrac;
         [SerializeField] public Vector2 CellOffset;
 
         private Vector2Hook GridWordPositionHook;
 
         private SquareGrid<GameObject> SquareGrid;
         private Vector3 ShapeSize;
+
+        public Action<int, int> OnResize;
+
+
+        private void Awake()
+        {
+            // SquareGrid =
+            //     new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewType);
+        }
 
         private void Start()
         {
@@ -32,9 +43,16 @@ namespace VitoBarra.GridSystem
 
         public void SetUp()
         {
-            UpdateGridPosition();
-            SquareGrid ??=
-                new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewType);
+            var gridWordPosition = transform.position;
+            GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
+            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,
+                ViewType);
+
+            HeightTrac = new TraceableInt(Height);
+            WidthTrac = new TraceableInt(Width);
+            TileSizeTrac = new TraceableValue<float>(TileSize);
+            CellOffsetTrac = new TraceableValue<Vector2>(CellOffset);
+            OnResize = null;
         }
 
 
@@ -69,8 +87,17 @@ namespace VitoBarra.GridSystem
         public void UpdateGridPosition()
         {
             var gridWordPosition = transform.position;
-            GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
             GridWordPositionHook.Set(gridWordPosition.x, gridWordPosition.y);
+        }
+
+        public GameObject GetObjectAtCell(SquareCell cell)
+        {
+            return SquareGrid.GetData(cell);
+        }
+
+        public GameObject GetObjectAtCell(int i, int j)
+        {
+            return SquareGrid.GetData(new SquareCell(i, j));
         }
 
 
@@ -78,14 +105,26 @@ namespace VitoBarra.GridSystem
         {
             if (Width <= 0) Width = 1;
             if (Height <= 0) Height = 1;
-
             if (SquareGrid == null) SetUp();
-            else
+
+            WidthTrac.Value = Width;
+            HeightTrac.Value = Height;
+            TileSizeTrac.Value = TileSize;
+            CellOffsetTrac.Value = CellOffset;
+
+            if (TileSizeTrac.IsValueChanged || CellOffsetTrac.IsValueChanged)
             {
-                SquareGrid.Resize(Width, Height).SetWorldInformation(TileSize, CellOffset);
+                SquareGrid?.SetWorldInformation(TileSize, CellOffset);
                 OnGridChange?.Invoke();
-                ShapeSize = new Vector3(TileSize / 1.8f, TileSize / 1.8f, 0);
             }
+
+            if (WidthTrac.IsValueChanged || HeightTrac.IsValueChanged)
+            {
+                SquareGrid?.Resize(Width, Height);
+                OnResize?.Invoke(Width, Height);
+            }
+
+            ShapeSize = new Vector3(TileSize / 1.8f, TileSize / 1.8f, 0);
         }
 
         public void OnDrawGizmos()
@@ -122,8 +161,5 @@ namespace VitoBarra.GridSystem
                 }
             }
         }
-
-
-
     }
 }
