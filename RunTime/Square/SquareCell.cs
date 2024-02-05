@@ -1,4 +1,6 @@
-﻿namespace VitoBarra.GridSystem.POCO.CellType
+﻿using VitoBarra.GridSystem.Framework;
+
+namespace VitoBarra.GridSystem.Square
 {
     public struct SquareCell : ICellType
     {

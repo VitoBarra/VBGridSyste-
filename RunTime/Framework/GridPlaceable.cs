@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
-using VitoBarra.GridSystem.POCO.CellType;
+using VitoBarra.GridSystem.Framework;
 
-namespace VitoBarra.GridSystem
+namespace VitoBarra.GridSystem.Framework
 {
     public abstract class GridSnappable<T> : MonoBehaviour where T : ICellType
     {
@@ -13,6 +13,7 @@ namespace VitoBarra.GridSystem
 
         protected abstract void SnapToGrid();
         protected abstract void HoldOnGrid();
-        protected abstract IList<T> GetPositionToOccupy(T generatedCell);
+        public abstract IList<T> GetAllCell();
+
     }
 }

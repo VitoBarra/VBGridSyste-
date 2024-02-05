@@ -1,6 +1,7 @@
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine.UIElements;
+using VitoBarra.GridSystem.Square;
 
 
 namespace VitoBarra.GridSystem.Editor

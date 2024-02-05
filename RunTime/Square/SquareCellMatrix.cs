@@ -1,7 +1,7 @@
 ﻿using VitoBarra.GeneralUtility.DataStructure;
-using VitoBarra.GridSystem.POCO.CellType;
+using VitoBarra.GridSystem.Framework;
 
-namespace VitoBarra.GridSystem
+namespace VitoBarra.GridSystem.Square
 {
     public class SquareCellMatrix<T> : ICellMemorization<T, SquareCell>
     {

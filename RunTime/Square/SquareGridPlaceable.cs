@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Serialization;
-using VitoBarra.GridSystem.POCO.CellType;
+using VitoBarra.GridSystem.Framework;
 
-namespace VitoBarra.GridSystem
+namespace VitoBarra.GridSystem.Square
 {
     [ExecuteInEditMode]
     public class SquareGridPlaceable : GridSnappable<SquareCell>
@@ -30,7 +30,7 @@ namespace VitoBarra.GridSystem
             GridManager.OnGridChange += HoldOnGrid;
             var generatedCell = NearestCell;
             transform.position = GridManager.GetCenterCell(generatedCell);
-            GridManager.OccupiesPosition(gameObject, GetPositionToOccupy(generatedCell));
+            GridManager.OccupiesCell(gameObject, GetAllCell(generatedCell));
             PinCell = generatedCell;
         }
 
@@ -49,14 +49,19 @@ namespace VitoBarra.GridSystem
 
         protected override void SnapToGrid()
         {
-            var IsMovementPossibile = GridManager.MoveBetweenCells(GetPositionToOccupy(PinCell),
-                GetPositionToOccupy(NearestCell), gameObject);
+            var IsMovementPossibile = GridManager.MoveBetweenCells(GetAllCell(),
+                GetAllCell(NearestCell), gameObject);
             if (IsMovementPossibile)
                 PinCell = NearestCell;
             transform.position = GridManager.GetCenterCell(PinCell);
             OnCellSet?.Invoke(PinCell);
         }
-        protected override IList<SquareCell> GetPositionToOccupy(SquareCell generatedCell)
+
+        public override IList<SquareCell> GetAllCell()
+        {
+            return GetAllCell(PinCell);
+        }
+        private  IList<SquareCell> GetAllCell(SquareCell generatedCell)
         {
             var result = new List<SquareCell>();
 
@@ -67,6 +72,8 @@ namespace VitoBarra.GridSystem
 
             return result;
         }
+
+
 
 
         private void OnMouseDrag()

@@ -1,4 +1,4 @@
-﻿namespace VitoBarra.GridSystem.POCO.CellType
+﻿namespace VitoBarra.GridSystem.Framework
 {
     public interface ICellMemorization<T,C> where C:ICellType
     {

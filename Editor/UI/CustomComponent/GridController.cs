@@ -3,8 +3,6 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using UnityEngine.UIElements;
 using VitoBarra.GeneralUtility.DataStructure;
-using VitoBarra.GridSystem.POCO;
-using VitoBarra.GridSystem.POCO.CellType;
 
 namespace VitoBarra.GridSystem.Editor.UI
 {

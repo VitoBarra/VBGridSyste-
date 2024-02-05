@@ -1,11 +1,10 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using VitoBarra.GridSystem.Poco;
-using VitoBarra.GridSystem.POCO.CellType;
 using VitoBarra.GeneralUtility.FeatureFullValue;
+using VitoBarra.GridSystem.Framework;
 
-namespace VitoBarra.GridSystem
+namespace VitoBarra.GridSystem.Square
 {
     [ExecuteInEditMode]
     public class SquaredGridManager : GridManager<SquareCell, GameObject>
@@ -20,16 +19,10 @@ namespace VitoBarra.GridSystem
         private Vector2Hook GridWordPositionHook;
 
         private SquareGrid<GameObject> SquareGrid;
-        private Vector3 ShapeSize;
+        public Vector3 ShapeSize;
 
         public Action<int, int> OnResize;
 
-
-        private void Awake()
-        {
-            // SquareGrid =
-            //     new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewType);
-        }
 
         private void Start()
         {
@@ -45,8 +38,7 @@ namespace VitoBarra.GridSystem
         {
             var gridWordPosition = transform.position;
             GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
-            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,
-                ViewType);
+            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,ViewDimension.D2);
 
             HeightTrac = new TraceableInt(Height);
             WidthTrac = new TraceableInt(Width);
@@ -56,15 +48,68 @@ namespace VitoBarra.GridSystem
         }
 
 
+
+
+        #region Data
+
+        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells,
+            GameObject data)
+        {
+            return SquareGrid.MoveBetweenCells(oldCells, NewCells, data);
+        }
+
+        public override bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell, GameObject data)
+        {
+            return SquareGrid.MoveBetweenCells(oldCell, newCell, data);
+        }
+
+        public override void DeleteAtCell(SquareCell cell)
+        {
+            SquareGrid.Delete(cell);
+        }
+
+        public override void DeleteAtCell(IList<SquareCell> cells)
+        {
+            SquareGrid.Delete(cells);
+        }
+
+        public override GameObject GetAtCell(SquareCell cell)
+        {
+            return SquareGrid.GetData(cell);
+        }
+
+        public override IList<GameObject> GetAtCell(IList<SquareCell> cells)
+        {
+            var data = new List<GameObject>();
+            foreach (var cell in cells)
+                data.Add(GetAtCell(cell)) ;
+
+            return data;
+        }
+
+        public  GameObject GetAtCell(int i, int j)
+        {
+            return GetAtCell(new SquareCell(i, j));
+        }
+
+        public override void OccupiesCell(GameObject placeable, IList<SquareCell> cellsToOccupy)
+        {
+            foreach (var cell in cellsToOccupy)
+                OccupiesCell(placeable, cell);
+        }
+        public override void OccupiesCell(GameObject placeable, SquareCell cellToOccupy)
+        {
+            SquareGrid.OccupiesPosition(placeable.gameObject, cellToOccupy);
+        }
+
+        #endregion
+
+
+        #region Placement
+
         public override SquareCell GetNearestCell(Vector3 position)
         {
             return SquareGrid.GetNearestCell(position);
-        }
-
-        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells,
-            GameObject placeable)
-        {
-            return SquareGrid.MoveBetweenCells(oldCells, NewCells, placeable);
         }
 
         public override Vector3 GetNearestCellCenter(Vector3 position)
@@ -72,12 +117,6 @@ namespace VitoBarra.GridSystem
             return SquareGrid?.GetNearestCellCenter(position) ?? position;
         }
 
-
-        public override void OccupiesPosition(GameObject placeable, IList<SquareCell> cellToOccupy)
-        {
-            foreach (var cell in cellToOccupy)
-                SquareGrid.OccupiesPosition(placeable.gameObject, cell);
-        }
 
         public override Vector3 GetCenterCell(SquareCell cell)
         {
@@ -90,15 +129,9 @@ namespace VitoBarra.GridSystem
             GridWordPositionHook.Set(gridWordPosition.x, gridWordPosition.y);
         }
 
-        public GameObject GetObjectAtCell(SquareCell cell)
-        {
-            return SquareGrid.GetData(cell);
-        }
+        #endregion
 
-        public GameObject GetObjectAtCell(int i, int j)
-        {
-            return SquareGrid.GetData(new SquareCell(i, j));
-        }
+
 
 
         private void OnValidate()
