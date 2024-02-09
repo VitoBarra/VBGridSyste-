@@ -38,7 +38,8 @@ namespace VitoBarra.GridSystem.Square
         {
             var gridWordPosition = transform.position;
             GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
-            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,ViewDimension.D2);
+            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,
+                ViewDimension.D2);
 
             HeightTrac = new TraceableInt(Height);
             WidthTrac = new TraceableInt(Width);
@@ -46,8 +47,6 @@ namespace VitoBarra.GridSystem.Square
             CellOffsetTrac = new TraceableValue<Vector2>(CellOffset);
             OnResize = null;
         }
-
-
 
 
         #region Data
@@ -82,12 +81,12 @@ namespace VitoBarra.GridSystem.Square
         {
             var data = new List<GameObject>();
             foreach (var cell in cells)
-                data.Add(GetAtCell(cell)) ;
+                data.Add(GetAtCell(cell));
 
             return data;
         }
 
-        public  GameObject GetAtCell(int i, int j)
+        public GameObject GetAtCell(int i, int j)
         {
             return GetAtCell(new SquareCell(i, j));
         }
@@ -97,6 +96,7 @@ namespace VitoBarra.GridSystem.Square
             foreach (var cell in cellsToOccupy)
                 OccupiesCell(placeable, cell);
         }
+
         public override void OccupiesCell(GameObject placeable, SquareCell cellToOccupy)
         {
             SquareGrid.OccupiesPosition(placeable.gameObject, cellToOccupy);
@@ -130,8 +130,6 @@ namespace VitoBarra.GridSystem.Square
         }
 
         #endregion
-
-
 
 
         private void OnValidate()

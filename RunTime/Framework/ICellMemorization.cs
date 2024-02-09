@@ -1,11 +1,11 @@
 ﻿namespace VitoBarra.GridSystem.Framework
 {
-    public interface ICellMemorization<T,C> where C:ICellType
+    public interface ICellMemorization<TData, TCell> where TCell : ICellType
     {
-        T Get(C cell);
-        void Set(T data,C cell);
-        void Resize(C cell);
+        TData Get(TCell cell);
+        void Set(TData data, TCell cell);
+        void Resize(TCell cell);
 
-        bool IsValidCord(C cell);
+        bool IsValidCord(TCell cell);
     }
 }

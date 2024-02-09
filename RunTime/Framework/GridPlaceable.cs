@@ -9,7 +9,7 @@ namespace VitoBarra.GridSystem.Framework
     public abstract class GridSnappable<T> : MonoBehaviour where T : ICellType
     {
         public T PinCell { get; protected set; }
-        [FormerlySerializedAs("OnCellChange")] [FormerlySerializedAs("OnMove")] public Action<T> OnCellSet;
+        public Action<T> OnCellSet;
 
         protected abstract void SnapToGrid();
         protected abstract void HoldOnGrid();

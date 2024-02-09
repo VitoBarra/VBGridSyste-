@@ -13,7 +13,7 @@ namespace VitoBarra.GridSystem.Framework
         [SerializeField] protected bool DrawPlaceHolder;
         [SerializeField] protected float TileSize;
         [SerializeField] protected TraceableValue<float> TileSizeTrac;
-         [HideInInspector] public ViewDimension viewDimension = ViewDimension.D2;
+         [FormerlySerializedAs("viewType")] [HideInInspector] public ViewDimension viewDimension = ViewDimension.D2;
         public Action OnGridChange;
 
         public abstract Vector3 GetCenterCell(TCell cell);

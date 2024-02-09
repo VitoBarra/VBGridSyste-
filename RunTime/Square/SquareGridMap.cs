@@ -27,7 +27,8 @@ namespace VitoBarra.GridSystem.Square
 
         public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
         {
-            if (!IsPositionFree(cellCord) && !force) throw new Exception("Position already occupied");
+            if (!IsPositionFree(cellCord) && !force)
+                throw new Exception("Position already occupied");
             DataMap.Set((true, data), cellCord);
         }
 
