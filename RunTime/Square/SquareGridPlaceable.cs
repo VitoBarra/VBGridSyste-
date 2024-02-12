@@ -68,7 +68,7 @@ namespace VitoBarra.GridSystem.Square
             for (int i = 0; i < VerticalMaxSpan; i++)
             for (int j = 0; j < HorizontalMaxSpan; j++)
                 if (PositionBitMap[i * HorizontalMaxSpan + j])
-                    result.Add(new SquareCell(generatedCell.I + i, generatedCell.J + j));
+                    result.Add(new SquareCell(generatedCell.row + i, generatedCell.col + j));
 
             return result;
         }

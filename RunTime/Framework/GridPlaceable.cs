@@ -6,7 +6,7 @@ using VitoBarra.GridSystem.Framework;
 
 namespace VitoBarra.GridSystem.Framework
 {
-    public abstract class GridSnappable<T> : MonoBehaviour where T : ICellType
+    public abstract class GridSnappable<T> : MonoBehaviour where T : AbstractCell
     {
         public T PinCell { get; protected set; }
         public Action<T> OnCellSet;

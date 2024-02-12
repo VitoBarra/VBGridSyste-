@@ -38,8 +38,7 @@ namespace VitoBarra.GridSystem.Square
         {
             var gridWordPosition = transform.position;
             GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
-            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset,
-                ViewDimension.D2);
+            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewDimension.D2);
 
             HeightTrac = new TraceableInt(Height);
             WidthTrac = new TraceableInt(Width);

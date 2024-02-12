@@ -9,32 +9,31 @@ namespace VitoBarra.GridSystem.Square
     {
         private ICellMemorization<(bool presence, T data), SquareCell> DataMap;
 
-
-        public SquareGridMap(int _width, int _height,T defaultValue=default)
+        public SquareGridMap(int _width, int _height, T defaultValue = default)
         {
             DataMap = new SquareCellMatrix<(bool presence, T data)>(_width, _height, (false, defaultValue));
         }
 
         public void ClearPosition(SquareCell cellCord)
         {
-            DataMap.Set((false, default), cellCord);
+            DataMap[cellCord] = (false, default);
         }
 
         public bool IsPositionFree(SquareCell cellCord)
         {
-            return !DataMap.Get(cellCord).presence;
+            return !DataMap[cellCord].presence;
         }
 
         public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
         {
             if (!IsPositionFree(cellCord) && !force)
                 throw new Exception("Position already occupied");
-            DataMap.Set((true, data), cellCord);
+            DataMap[cellCord] = (true, data);
         }
 
         public void MoveLogicObject(SquareCell oldSquareCell, SquareCell newSquareCell, bool force = false)
         {
-            var oldCellData = DataMap.Get(oldSquareCell).data;
+            var oldCellData = DataMap[oldSquareCell].data;
             ClearPosition(oldSquareCell);
             OccupiesPosition(oldCellData, newSquareCell, force);
         }
@@ -45,7 +44,7 @@ namespace VitoBarra.GridSystem.Square
             var oldCellsData = new List<(bool, T data)>();
             foreach (var oldCell in oldSquareCell)
             {
-                oldCellsData.Add(DataMap.Get(oldCell));
+                oldCellsData.Add(DataMap[oldCell]);
                 ClearPosition(oldCell);
             }
 
@@ -57,7 +56,7 @@ namespace VitoBarra.GridSystem.Square
 
         public T GetData(SquareCell cell)
         {
-            return DataMap.Get(cell).data;
+            return DataMap[cell].data;
         }
 
         public void Resize(int width, int height)
@@ -67,7 +66,7 @@ namespace VitoBarra.GridSystem.Square
 
         public bool IsTheSame(SquareCell cell, T data)
         {
-            var data1 = DataMap.Get(cell).data;
+            var data1 = DataMap[cell].data;
             return data1 != null && data1.Equals(data);
         }
 

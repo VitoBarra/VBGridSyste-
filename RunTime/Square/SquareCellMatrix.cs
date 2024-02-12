@@ -12,24 +12,24 @@ namespace VitoBarra.GridSystem.Square
             Matrix = new DynamicMatrix<T>(width, height, defaultValue);
         }
 
-        public T Get(SquareCell cell)
+        public T this[SquareCell cell]
         {
-            return Matrix.Get(cell.I, cell.J);
+            get => Get(cell);
+            set => Set(value, cell);
+        }
+        public T this[int i, int j]
+        {
+            get => Get(new SquareCell(i, j));
+            set => Set(value, new SquareCell(i, j));
         }
 
-        public void Set(T data, SquareCell cell)
-        {
-            Matrix.Set(data, cell.I, cell.J);
-        }
 
-        public void Resize(SquareCell cell)
-        {
-            Matrix.Resize(cell.I, cell.J);
-        }
+        public T Get(SquareCell cell) => Matrix[cell.row, cell.col];
 
-        public bool IsValidCord(SquareCell cell)
-        {
-            return Matrix.IsValidCord(cell.I, cell.J);
-        }
+        public void Set(T data, SquareCell cell) => Matrix[cell.row, cell.col] = data;
+
+        public void Resize(SquareCell cell) => Matrix.Resize(cell.row, cell.col);
+
+        public bool IsValidCord(SquareCell cell) => Matrix.IsValidCord(cell.row, cell.col);
     }
 }

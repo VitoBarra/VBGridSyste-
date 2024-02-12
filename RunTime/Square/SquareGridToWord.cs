@@ -70,8 +70,8 @@ namespace VitoBarra.GridSystem.Square
         {
             z = 0;
             y = 0;
-            x = (cell.I + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
-            var refAxis = (cell.J + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
+            x = (cell.row + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
+            var refAxis = (cell.col + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
             switch (ViewDimension)
             {
                 case ViewDimension.D2:

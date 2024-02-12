@@ -29,10 +29,6 @@ namespace VitoBarra.GridSystem.Editor
                 return finalInspector;
 
             InspectorXMLFile.CloneTree(finalInspector);
-            // var button = myInspector.Q<Button>("DrawGrid");
-            // button.clickable.clicked += gridManager.SetUp;
-
-            // Return the finished inspector UI
             return finalInspector;
         }
     }
