@@ -15,8 +15,8 @@ namespace VitoBarra.GridSystem.Editor.UI
 
         public new class UxmlTraits : VisualElement.UxmlTraits
         {
-            UxmlIntAttributeDescription Col = new UxmlIntAttributeDescription { name = "Columns", defaultValue = 3 };
-            UxmlIntAttributeDescription Row = new UxmlIntAttributeDescription { name = "Rows", defaultValue = 3 };
+            UxmlIntAttributeDescription Rows = new UxmlIntAttributeDescription { name = "Rows", defaultValue = 3 };
+            UxmlIntAttributeDescription Columns = new UxmlIntAttributeDescription { name = "Columns", defaultValue = 3 };
 
             public override IEnumerable<UxmlChildElementDescription> uxmlChildElementsDescription
             {
@@ -26,8 +26,8 @@ namespace VitoBarra.GridSystem.Editor.UI
             public override void Init(VisualElement ve, IUxmlAttributes bag, CreationContext cc)
             {
                 base.Init(ve, bag, cc);
-                ((GridController)ve).Rows = Row.GetValueFromBag(bag, cc);
-                ((GridController)ve).Columns = Col.GetValueFromBag(bag, cc);
+                ((GridController)ve).Rows = Rows.GetValueFromBag(bag, cc);
+                ((GridController)ve).Columns = Columns.GetValueFromBag(bag, cc);
             }
         }
 
@@ -59,7 +59,7 @@ namespace VitoBarra.GridSystem.Editor.UI
 
         public GridController()
         {
-            Grid = new DynamicMatrix<UnityEngine.UI.Toggle>(Columns, Rows);
+            Grid = new DynamicMatrix<UnityEngine.UI.Toggle>(Rows, Columns);
             InitializeGrid();
         }
 
@@ -70,7 +70,7 @@ namespace VitoBarra.GridSystem.Editor.UI
             this.style.marginBottom = 5;
             this.style.marginLeft = 5;
             this.style.marginRight = 5;
-            Grid.Resize(Columns, Rows);
+            Grid.Resize(Rows,Columns );
 
             var gridBox = new VisualElement();
             gridBox.name = "GridBox";
@@ -81,12 +81,12 @@ namespace VitoBarra.GridSystem.Editor.UI
             gridBox.style.marginBottom = 5;
             gridBox.style.marginLeft = 5;
 
-            for (int i = 0; i < Columns; i++)
+            for (int i = 0; i < Rows; i++)
             {
                 var column = new VisualElement();
-                column.style.width = Length.Percent(100.0f / Columns);
+                column.style.width = Length.Percent(100.0f / Rows);
                 column.style.height = Length.Percent(100);
-                for (int j = 0; j < Rows; j++)
+                for (int j = 0; j < Columns; j++)
                 {
                     var rowElement = new VisualElement();
                     rowElement.style.height = Length.Percent(100);

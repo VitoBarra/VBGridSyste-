@@ -4,18 +4,18 @@ namespace VitoBarra.GridSystem.Square
 {
     public class SquareCell : AbstractCell
     {
-        public readonly int row;
-        public readonly int col;
+        public readonly int Row;
+        public readonly int Column;
 
-        public SquareCell(int i, int j)
+        public SquareCell(int row, int column)
         {
-            row = i;
-            col = j;
+            Row = row;
+            Column = column;
         }
 
         public override bool Equals(AbstractCell other)
         {
-            return other is SquareCell cell && row == cell.row && col == cell.col;
+            return other is SquareCell cell && Row == cell.Row && Column == cell.Column;
         }
     }
 }

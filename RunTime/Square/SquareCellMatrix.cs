@@ -7,9 +7,9 @@ namespace VitoBarra.GridSystem.Square
     {
         DynamicMatrix<T> Matrix;
 
-        public SquareCellMatrix(int width, int height, T defaultValue = default)
+        public SquareCellMatrix(int row, int column, T defaultValue = default)
         {
-            Matrix = new DynamicMatrix<T>(width, height, defaultValue);
+            Matrix = new DynamicMatrix<T>(row, column, defaultValue);
         }
 
         public T this[SquareCell cell]
@@ -17,19 +17,19 @@ namespace VitoBarra.GridSystem.Square
             get => Get(cell);
             set => Set(value, cell);
         }
-        public T this[int i, int j]
+        public T this[int row, int col]
         {
-            get => Get(new SquareCell(i, j));
-            set => Set(value, new SquareCell(i, j));
+            get => Get(new SquareCell(row, col));
+            set => Set(value, new SquareCell(row, col));
         }
 
 
-        public T Get(SquareCell cell) => Matrix[cell.row, cell.col];
+        public T Get(SquareCell cell) => Matrix[cell.Row, cell.Column];
 
-        public void Set(T data, SquareCell cell) => Matrix[cell.row, cell.col] = data;
+        public void Set(T data, SquareCell cell) => Matrix[cell.Row, cell.Column] = data;
 
-        public void Resize(SquareCell cell) => Matrix.Resize(cell.row, cell.col);
+        public void Resize(SquareCell cell) => Matrix.Resize(cell.Row, cell.Column);
 
-        public bool IsValidCord(SquareCell cell) => Matrix.IsValidCord(cell.row, cell.col);
+        public bool IsValidCord(SquareCell cell) => Matrix.IsValidCord(cell.Row, cell.Column);
     }
 }

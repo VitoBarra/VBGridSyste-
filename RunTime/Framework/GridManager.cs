@@ -16,7 +16,7 @@ namespace VitoBarra.GridSystem.Framework
          [FormerlySerializedAs("viewType")] [HideInInspector] public ViewDimension viewDimension = ViewDimension.D2;
         public Action OnGridChange;
 
-        public abstract Vector3 GetCenterCell(TCell cell);
+        public abstract Vector3 GetWordPositionCenterCell(TCell cell);
         public abstract TCell GetNearestCell(Vector3 position);
         public abstract Vector3 GetNearestCellCenter(Vector3 position);
 

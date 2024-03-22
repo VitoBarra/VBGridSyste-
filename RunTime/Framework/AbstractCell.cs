@@ -11,6 +11,11 @@ namespace VitoBarra.GridSystem.Framework
             return obj.GetType() == this.GetType() && Equals((AbstractCell)obj);
         }
 
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+
 
         public abstract bool Equals(AbstractCell other);
 

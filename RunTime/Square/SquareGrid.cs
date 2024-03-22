@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using VitoBarra.GeneralUtility.FeatureFullValue;
@@ -17,21 +18,21 @@ namespace VitoBarra.GridSystem.Square
             SquareGridToWord = squareGridToWord;
         }
 
-        public SquareGrid(int width, int height, Vector2Hook gridWordPositionHook, float tileSize,
+        public SquareGrid(int row, int col, Vector2Hook gridWordPositionHook, float tileSize,
             Vector2 cellOffset,
             ViewDimension viewDimension)
         {
-            LogicSquareGridMap = new SquareGridMap<T>(width, height);
+            LogicSquareGridMap = new SquareGridMap<T>(row, col);
             SquareGridToWord = new SquareGridToWord(gridWordPositionHook, tileSize, cellOffset, viewDimension);
-            SquareGridToWord.SetDimension(viewDimension).SetBounds(width, height);
+            SquareGridToWord.SetDimension(viewDimension).SetBounds(row, col);
         }
 
         #region SetUp
 
-        public SquareGrid<T> Resize(int width, int height)
+        public SquareGrid<T> Resize(int row, int col)
         {
-            LogicSquareGridMap.Resize(width, height);
-            SquareGridToWord.SetBounds(width, height);
+            LogicSquareGridMap.Resize(row, col);
+            SquareGridToWord.SetBounds(row, col);
             return this;
         }
 
@@ -65,7 +66,14 @@ namespace VitoBarra.GridSystem.Square
 
         public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
         {
-            LogicSquareGridMap.OccupiesPosition(data, cellCord, force);
+            try
+            {
+                LogicSquareGridMap.OccupiesPosition(data, cellCord, force);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e);
+            }
         }
 
         private bool IsMovementPossible(SquareCell oldCell, SquareCell newCell, T data)

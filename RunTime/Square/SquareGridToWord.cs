@@ -13,7 +13,7 @@ namespace VitoBarra.GridSystem.Square
         private float TileSize;
 
 
-        int Width, Height;
+        int Column, Row;
 
         public SquareGridToWord(Vector2Hook wordOffset, float tileSize, Vector2 cellNumberOffset = default,
             ViewDimension viewDimension = ViewDimension.D2)
@@ -25,12 +25,12 @@ namespace VitoBarra.GridSystem.Square
         }
 
 
-        public SquareGridToWord SetBounds(int width, int height)
+        public SquareGridToWord SetBounds(int row, int col)
         {
-            if (width <= 0) width = 1;
-            if (height <= 0) width = 1;
-            Width = width;
-            Height = height;
+            if (row <= 0) row = 1;
+            if (col <= 0) row = 1;
+            Column = col;
+            Row = row;
             return this;
         }
 
@@ -70,8 +70,8 @@ namespace VitoBarra.GridSystem.Square
         {
             z = 0;
             y = 0;
-            x = (cell.row + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
-            var refAxis = (cell.col + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
+            x = (cell.Column + CellNumberOffset.x) * TileSize + WordOffset.i + offset;
+            var refAxis = (cell.Row + CellNumberOffset.y) * TileSize + WordOffset.j + offset;
             switch (ViewDimension)
             {
                 case ViewDimension.D2:
@@ -91,13 +91,14 @@ namespace VitoBarra.GridSystem.Square
 
         public SquareCell GetNearestCell(Vector3 worldPosition)
         {
-            var i = Math.Clamp(
+            var col = Math.Clamp(
                 Mathf.FloorToInt((worldPosition.x - CellNumberOffset.x * TileSize - WordOffset.i) / TileSize), 0,
-                Width - 1);
+                Column - 1);
             var refAxis = ViewDimension == ViewDimension.D2 ? worldPosition.y : worldPosition.z;
-            var j = Math.Clamp(Mathf.FloorToInt((refAxis - CellNumberOffset.y * TileSize - WordOffset.j) / TileSize), 0,
-                Height - 1);
-            return new SquareCell(i, j);
+            var row = Math.Clamp(Mathf.FloorToInt((refAxis - CellNumberOffset.y * TileSize - WordOffset.j) / TileSize),
+                0,
+                Row - 1);
+            return new SquareCell(row, col);
         }
     }
 }

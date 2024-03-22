@@ -9,9 +9,9 @@ namespace VitoBarra.GridSystem.Square
     {
         private ICellMemorization<(bool presence, T data), SquareCell> DataMap;
 
-        public SquareGridMap(int _width, int _height, T defaultValue = default)
+        public SquareGridMap(int row, int col, T defaultValue = default)
         {
-            DataMap = new SquareCellMatrix<(bool presence, T data)>(_width, _height, (false, defaultValue));
+            DataMap = new SquareCellMatrix<(bool presence, T data)>(row, col, (false, defaultValue));
         }
 
         public void ClearPosition(SquareCell cellCord)
@@ -59,9 +59,9 @@ namespace VitoBarra.GridSystem.Square
             return DataMap[cell].data;
         }
 
-        public void Resize(int width, int height)
+        public void Resize(int row, int col)
         {
-            DataMap.Resize(new SquareCell(width, height));
+            DataMap.Resize(new SquareCell(row, col));
         }
 
         public bool IsTheSame(SquareCell cell, T data)

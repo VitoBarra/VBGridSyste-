@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using VitoBarra.GeneralUtility.FeatureFullValue;
 using VitoBarra.GridSystem.Framework;
 
@@ -9,8 +10,10 @@ namespace VitoBarra.GridSystem.Square
     [ExecuteInEditMode]
     public class SquaredGridManager : GridManager<SquareCell, GameObject>
     {
-        private TraceableInt WidthTrac, HeightTrac;
-        [SerializeField] public int Width, Height;
+        private TraceableInt RowTrac, ColTrac ;
+
+        [SerializeField] public int Row;
+         [SerializeField] public int Column;
 
 
         private TraceableValue<Vector2> CellOffsetTrac;
@@ -38,10 +41,10 @@ namespace VitoBarra.GridSystem.Square
         {
             var gridWordPosition = transform.position;
             GridWordPositionHook ??= new Vector2Hook(gridWordPosition.x, gridWordPosition.y);
-            SquareGrid ??= new SquareGrid<GameObject>(Width, Height, GridWordPositionHook, TileSize, CellOffset, ViewDimension.D2);
+            SquareGrid ??= new SquareGrid<GameObject>(Row, Column, GridWordPositionHook, TileSize, CellOffset, ViewDimension.D2);
 
-            HeightTrac = new TraceableInt(Height);
-            WidthTrac = new TraceableInt(Width);
+            RowTrac = new TraceableInt(Row);
+            ColTrac = new TraceableInt(Column);
             TileSizeTrac = new TraceableValue<float>(TileSize);
             CellOffsetTrac = new TraceableValue<Vector2>(CellOffset);
             OnResize = null;
@@ -85,9 +88,9 @@ namespace VitoBarra.GridSystem.Square
             return data;
         }
 
-        public GameObject GetAtCell(int i, int j)
+        public GameObject GetAtCell(int row, int col)
         {
-            return GetAtCell(new SquareCell(i, j));
+            return GetAtCell(new SquareCell(row, col));
         }
 
         public override void OccupiesCell(GameObject placeable, IList<SquareCell> cellsToOccupy)
@@ -117,7 +120,7 @@ namespace VitoBarra.GridSystem.Square
         }
 
 
-        public override Vector3 GetCenterCell(SquareCell cell)
+        public override Vector3 GetWordPositionCenterCell(SquareCell cell)
         {
             return SquareGrid.GetWordPositionCenterCell(cell);
         }
@@ -133,12 +136,12 @@ namespace VitoBarra.GridSystem.Square
 
         private void OnValidate()
         {
-            if (Width <= 0) Width = 1;
-            if (Height <= 0) Height = 1;
+            if (Column <= 0) Column = 1;
+            if (Row <= 0) Row = 1;
             if (SquareGrid == null) SetUp();
 
-            WidthTrac.Value = Width;
-            HeightTrac.Value = Height;
+            ColTrac.Value = Column;
+            RowTrac.Value = Row;
             TileSizeTrac.Value = TileSize;
             CellOffsetTrac.Value = CellOffset;
 
@@ -148,10 +151,10 @@ namespace VitoBarra.GridSystem.Square
                 OnGridChange?.Invoke();
             }
 
-            if (WidthTrac.IsValueChanged || HeightTrac.IsValueChanged)
+            if (ColTrac.IsValueChanged || RowTrac.IsValueChanged)
             {
-                SquareGrid?.Resize(Width, Height);
-                OnResize?.Invoke(Width, Height);
+                SquareGrid?.Resize(Row, Column);
+                OnResize?.Invoke(Row, Column);
             }
 
             ShapeSize = new Vector3(TileSize / 1.8f, TileSize / 1.8f, 0);
@@ -162,9 +165,9 @@ namespace VitoBarra.GridSystem.Square
             if (SquareGrid == null) return;
 
 
-            for (var i = 0; i < Width; i++)
+            for (var i = 0; i < Row; i++)
             {
-                for (var j = 0; j < Height; j++)
+                for (var j = 0; j < Column ; j++)
                 {
                     Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(i, j),
                         SquareGrid.GetWordPositionGridEdge(i, j + 1));
@@ -173,17 +176,17 @@ namespace VitoBarra.GridSystem.Square
                 }
             }
 
-            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(0, Height),
-                SquareGrid.GetWordPositionGridEdge(Width, Height));
-            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(Width, 0),
-                SquareGrid.GetWordPositionGridEdge(Width, Height));
+            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(0, Column),
+                SquareGrid.GetWordPositionGridEdge(Row, Column));
+            Gizmos.DrawLine(SquareGrid.GetWordPositionGridEdge(Row, 0),
+                SquareGrid.GetWordPositionGridEdge(Row, Column));
 
             if (!DrawPlaceHolder) return;
 
 
-            for (var i = 0; i < Width; i++)
+            for (var i = 0; i < Row; i++)
             {
-                for (var j = 0; j < Height; j++)
+                for (var j = 0; j < Column; j++)
                 {
                     var cell = new SquareCell(i, j);
                     Gizmos.color = SquareGrid.IsPositionFree(cell) ? Color.green : Color.red;

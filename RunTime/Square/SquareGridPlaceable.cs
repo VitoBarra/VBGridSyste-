@@ -25,12 +25,12 @@ namespace VitoBarra.GridSystem.Square
 
         private void Start()
         {
-            if(GridManager == null) return;
+            if (GridManager == null) return;
 
             GridManager.OnGridChange += HoldOnGrid;
             var generatedCell = NearestCell;
-            transform.position = GridManager.GetCenterCell(generatedCell);
-            GridManager.OccupiesCell(gameObject, GetAllCell(generatedCell));
+            transform.position = GridManager.GetWordPositionCenterCell(generatedCell);
+            GridManager.OccupiesCell(gameObject, GetAllOccupiedCell(generatedCell));
             PinCell = generatedCell;
         }
 
@@ -44,36 +44,36 @@ namespace VitoBarra.GridSystem.Square
 
         protected override void HoldOnGrid()
         {
-            transform.position = GridManager.GetCenterCell(PinCell);
+            transform.position = GridManager.GetWordPositionCenterCell(PinCell);
         }
 
         protected override void SnapToGrid()
         {
-            var IsMovementPossibile = GridManager.MoveBetweenCells(GetAllCell(),
-                GetAllCell(NearestCell), gameObject);
+            var IsMovementPossibile = GridManager.MoveBetweenCells(GetAllOccupiedCell(),GetAllOccupiedCell(NearestCell), gameObject);
             if (IsMovementPossibile)
                 PinCell = NearestCell;
-            transform.position = GridManager.GetCenterCell(PinCell);
+            transform.position = GridManager.GetWordPositionCenterCell(PinCell);
             OnCellSet?.Invoke(PinCell);
         }
 
-        public override IList<SquareCell> GetAllCell()
+        public override IList<SquareCell> GetAllOccupiedCell()
         {
-            return GetAllCell(PinCell);
+            return PinCell == null ? null : GetAllOccupiedCell(PinCell);
         }
-        private  IList<SquareCell> GetAllCell(SquareCell generatedCell)
+
+        private IList<SquareCell> GetAllOccupiedCell(SquareCell generatedCell)
         {
             var result = new List<SquareCell>();
+
+
 
             for (int i = 0; i < VerticalMaxSpan; i++)
             for (int j = 0; j < HorizontalMaxSpan; j++)
                 if (PositionBitMap[i * HorizontalMaxSpan + j])
-                    result.Add(new SquareCell(generatedCell.row + i, generatedCell.col + j));
+                    result.Add(new SquareCell(generatedCell.Row + i, generatedCell.Column + j));
 
             return result;
         }
-
-
 
 
         private void OnMouseDrag()
@@ -112,6 +112,5 @@ namespace VitoBarra.GridSystem.Square
                     break;
             }
         }
-
     }
 }

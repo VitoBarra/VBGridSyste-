@@ -1,0 +1,17 @@
+{
+    "name": "VBGridSystem.Tests",
+    "rootNamespace": "VitoBarra.GridSystem.Tests",
+    "references": [
+        "GUID:a32955e2159053a40b0f1d59ac34804c",
+        "GUID:b921b23313731e348aadb107497397af"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
