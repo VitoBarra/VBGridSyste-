@@ -14,15 +14,11 @@ namespace VitoBarra.GridSystem.Square
             DataMap = new SquareCellMatrix<(bool presence, T data)>(row, col, (false, defaultValue));
         }
 
-        public void ClearPosition(SquareCell cellCord)
-        {
-            DataMap[cellCord] = (false, default);
-        }
+        public void ClearPosition(SquareCell cellCord) => DataMap.Clear(cellCord);
 
-        public bool IsPositionFree(SquareCell cellCord)
-        {
-            return !DataMap[cellCord].presence;
-        }
+        public void ClearAllPosition() => DataMap.ClearAll();
+
+        public bool IsPositionFree(SquareCell cellCord) => !DataMap[cellCord].presence;
 
         public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
         {

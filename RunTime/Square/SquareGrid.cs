@@ -72,7 +72,7 @@ namespace VitoBarra.GridSystem.Square
             }
             catch (Exception e)
             {
-                Debug.LogWarning(e);
+                Debug.LogWarning(e.Message + $"In position: {cellCord.Row},{cellCord.Column}");
             }
         }
 
@@ -131,6 +131,11 @@ namespace VitoBarra.GridSystem.Square
             LogicSquareGridMap.ClearPosition(cell);
         }
 
+        public void ClearGrid()
+        {
+            LogicSquareGridMap.ClearAllPosition();
+        }
+
         #endregion
 
         #region WordLogic
@@ -157,5 +162,7 @@ namespace VitoBarra.GridSystem.Square
         }
 
         #endregion
+
+
     }
 }

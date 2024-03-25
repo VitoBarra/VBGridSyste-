@@ -104,6 +104,11 @@ namespace VitoBarra.GridSystem.Square
             SquareGrid.OccupiesPosition(placeable.gameObject, cellToOccupy);
         }
 
+        public void ClearGrid()
+        {
+            SquareGrid.ClearGrid();
+        }
+
         #endregion
 
 
@@ -194,5 +199,7 @@ namespace VitoBarra.GridSystem.Square
                 }
             }
         }
+
+
     }
 }

@@ -21,6 +21,10 @@ namespace VitoBarra.GridSystem.Square
         private void Awake()
         {
             GridManager = GetComponentInParent<SquaredGridManager>();
+            var generatedCell = NearestCell;
+            transform.position = GridManager.GetWordPositionCenterCell(generatedCell);
+            GridManager.OccupiesCell(gameObject, GetAllOccupiedCell(generatedCell));
+            Cell = generatedCell;
         }
 
         private void Start()
@@ -28,10 +32,6 @@ namespace VitoBarra.GridSystem.Square
             if (GridManager == null) return;
 
             GridManager.OnGridChange += HoldOnGrid;
-            var generatedCell = NearestCell;
-            transform.position = GridManager.GetWordPositionCenterCell(generatedCell);
-            GridManager.OccupiesCell(gameObject, GetAllOccupiedCell(generatedCell));
-            PinCell = generatedCell;
         }
 
 
@@ -44,27 +44,27 @@ namespace VitoBarra.GridSystem.Square
 
         protected override void HoldOnGrid()
         {
-            transform.position = GridManager.GetWordPositionCenterCell(PinCell);
+            transform.position = GridManager.GetWordPositionCenterCell(Cell);
         }
 
         protected override void SnapToGrid()
         {
-            var IsMovementPossibile = GridManager.MoveBetweenCells(GetAllOccupiedCell(),GetAllOccupiedCell(NearestCell), gameObject);
+            var IsMovementPossibile =
+                GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(NearestCell), gameObject);
             if (IsMovementPossibile)
-                PinCell = NearestCell;
-            transform.position = GridManager.GetWordPositionCenterCell(PinCell);
-            OnCellSet?.Invoke(PinCell);
+                Cell = NearestCell;
+            transform.position = GridManager.GetWordPositionCenterCell(Cell);
+            OnCellSet?.Invoke(Cell);
         }
 
         public override IList<SquareCell> GetAllOccupiedCell()
         {
-            return PinCell == null ? null : GetAllOccupiedCell(PinCell);
+            return Cell == null ? null : GetAllOccupiedCell(Cell);
         }
 
         private IList<SquareCell> GetAllOccupiedCell(SquareCell generatedCell)
         {
             var result = new List<SquareCell>();
-
 
 
             for (int i = 0; i < VerticalMaxSpan; i++)
