@@ -5,7 +5,7 @@ using VitoBarra.GridSystem.Square;
 
 namespace VitoBarra.GridSystem.Editor
 {
-    [CustomEditor(typeof(SquareGridPlaceable))]
+    [CustomEditor(typeof(SquareGridSnappable))]
 
     public class SquareGridPlaceableEditor : UnityEditor.Editor
     {
@@ -25,7 +25,7 @@ namespace VitoBarra.GridSystem.Editor
 
 
 
-            if (target is not SquareGridPlaceable gridManager)
+            if (target is not SquareGridSnappable gridManager)
                 return finalInspector;
 
             InspectorXMLFile.CloneTree(finalInspector);

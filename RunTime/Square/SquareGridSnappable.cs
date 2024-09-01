@@ -1,42 +1,59 @@
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
 using VitoBarra.GridSystem.Framework;
 
 namespace VitoBarra.GridSystem.Square
 {
     [ExecuteInEditMode]
-    public class SquareGridPlaceable : GridSnappable<SquareCell>
+    public class SquareGridSnappable : GridSnappable<SquareCell>
     {
         SquaredGridManager GridManager;
+        public SquereGridSnappableElement SnappableElementPrefab;
 
         public int VerticalMaxSpan = 1;
         public int HorizontalMaxSpan = 1;
-        public List<bool> PositionBitMap;
+        [SerializeField]private List<bool> PositionBitMap= new List<bool>();
+
+
         private SquareCell NearestCell => GridManager.GetNearestCell(transform.position);
 
         private void Awake()
         {
             GridManager = GetComponentInParent<SquaredGridManager>();
-            var generatedCell = NearestCell;
-            transform.position = GridManager.GetWordPositionCenterCell(generatedCell);
-            GridManager.OccupiesCell(gameObject, GetAllOccupiedCell(generatedCell));
-            Cell = generatedCell;
-        }
-
-        private void Start()
-        {
-            if (GridManager == null) return;
-
             GridManager.OnGridChange += HoldOnGrid;
-        }
 
+        }
 
         private void OnEnable()
         {
-            if (GridManager != null)
-                transform.position = GridManager.GetNearestCellCenter(transform.position);
+            if (!UpDateCellAndPosition()) return;
+            GridManager.OccupiesCell(gameObject, GetAllOccupiedCell(Cell));
+
+            Instansiate();
         }
 
+        private void Instansiate()
+        {
+            for (int i = 0; i < VerticalMaxSpan; i++)
+            for (int j = 0; j < HorizontalMaxSpan; j++)
+                if (PositionBitMap[i * HorizontalMaxSpan + j])
+                {
+                    var instance= Instantiate(SnappableElementPrefab, GridManager.GetWordPositionCenterCell(Cell.Add(i,j)), Quaternion.identity, transform);
+                    instance.SnappablePivo = this;
+                }
+        }
+
+        private void OnDisable()
+        {
+            ClearChildren();
+            GridManager?.DeleteAtCell(GetAllOccupiedCell());
+        }
+
+        bool UpDateCellAndPosition()
+        {
+            return UpDateCellAndPosition(GridManager);
+        }
 
         protected override void HoldOnGrid()
         {
@@ -45,29 +62,30 @@ namespace VitoBarra.GridSystem.Square
 
         protected override void SnapToGrid()
         {
-            var IsMovementPossible =
+            var isMovementPossible =
                 GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(NearestCell));
-            if (IsMovementPossible)
+            if (isMovementPossible)
                 Cell = NearestCell;
             transform.position = GridManager.GetWordPositionCenterCell(Cell);
             OnCellSet?.Invoke(Cell);
         }
 
-        public override IList<SquareCell> GetAllOccupiedCell()
+        [CanBeNull]
+        public IList<SquareCell> GetAllOccupiedCell()
         {
-            return Cell == null ? null : GetAllOccupiedCell(Cell);
+            return Cell is null ? null : GetAllOccupiedCell(Cell);
         }
 
         private IList<SquareCell> GetAllOccupiedCell(SquareCell generatedCell)
         {
-            if (generatedCell == null) return null;
+            if (generatedCell is null) return null;
             var result = new List<SquareCell>();
 
 
             for (int i = 0; i < VerticalMaxSpan; i++)
             for (int j = 0; j < HorizontalMaxSpan; j++)
                 if (PositionBitMap[i * HorizontalMaxSpan + j])
-                    result.Add(new SquareCell(generatedCell.Row + i, generatedCell.Column + j));
+                    result.Add(generatedCell.Add( i,  j));
 
             return result;
         }
@@ -75,8 +93,8 @@ namespace VitoBarra.GridSystem.Square
 
         private void OnMouseDrag()
         {
-            var screenCord = Input.mousePosition;
             if (Camera.main == null) return;
+            var screenCord = Input.mousePosition;
             screenCord.z = Camera.main.nearClipPlane + 1;
             gameObject.transform.position = Camera.main.ScreenToWorldPoint(screenCord);
         }
@@ -86,15 +104,20 @@ namespace VitoBarra.GridSystem.Square
             SnapToGrid();
         }
 
+        private void ClearChildren()
+        {
+            for (int i = 0; i < transform.childCount; i++)
+                DestroyImmediate(transform.GetChild(i).gameObject);
+        }
         private void OnDestroy()
         {
-            if (GridManager == null) return;
+            if (GridManager is null) return;
             GridManager.OnGridChange -= HoldOnGrid;
+
         }
 
         private void OnValidate()
         {
-            PositionBitMap ??= new List<bool>();
             var countDifference = PositionBitMap.Count - (VerticalMaxSpan * HorizontalMaxSpan);
             if (countDifference == 0) return;
 

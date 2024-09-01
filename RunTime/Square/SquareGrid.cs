@@ -145,10 +145,10 @@ namespace VitoBarra.GridSystem.Square
             return SquareGridToWord.GetWordPositionGridEdge(new SquareCell(p0, p1));
         }
 
-        public Vector3 GetNearestCellCenter(Vector3 position)
+        public Vector3 GetNearestCellCenter(Vector3 position, out SquareCell cell)
         {
-            SquareCell generatedCell = SquareGridToWord.GetNearestCell(position);
-            return SquareGridToWord.GetWordPositionCenterCell(generatedCell);
+            cell = SquareGridToWord.GetNearestCell(position);
+            return SquareGridToWord.GetWordPositionCenterCell(cell);
         }
 
         #endregion

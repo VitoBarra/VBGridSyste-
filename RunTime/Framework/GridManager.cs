@@ -20,7 +20,7 @@ namespace VitoBarra.GridSystem.Framework
 
         public abstract Vector3 GetWordPositionCenterCell(TCell cell);
         public abstract TCell GetNearestCell(Vector3 position);
-        public abstract Vector3 GetNearestCellCenter(Vector3 position);
+        public abstract Vector3 GetNearestCellCenter(Vector3 position, out TCell cell);
         #endregion
 
 

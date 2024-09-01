@@ -27,7 +27,7 @@ namespace VitoBarra.GridSystem.Square
         public Action<int, int> OnResize;
 
 
-        private void Start()
+        private void Awake()
         {
             SetUp();
         }
@@ -53,9 +53,9 @@ namespace VitoBarra.GridSystem.Square
 
         #region Data
 
-        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells)
+        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> newCells)
         {
-            return SquareGrid.MoveBetweenCells(oldCells, NewCells);
+            return SquareGrid.MoveBetweenCells(oldCells, newCells);
         }
 
         public override bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell)
@@ -70,6 +70,7 @@ namespace VitoBarra.GridSystem.Square
 
         public override void DeleteAtCell(IList<SquareCell> cells)
         {
+            if (cells is null) return;
             SquareGrid.Delete(cells);
         }
 
@@ -94,6 +95,7 @@ namespace VitoBarra.GridSystem.Square
 
         public override void OccupiesCell(GameObject placeable, IList<SquareCell> cellsToOccupy)
         {
+            if (placeable is null) return;
             foreach (var cell in cellsToOccupy)
                 OccupiesCell(placeable, cell);
         }
@@ -135,9 +137,14 @@ namespace VitoBarra.GridSystem.Square
             return SquareGrid.GetNearestCell(position);
         }
 
-        public override Vector3 GetNearestCellCenter(Vector3 position)
+        public override Vector3 GetNearestCellCenter(Vector3 position , out SquareCell cell)
         {
-            return SquareGrid?.GetNearestCellCenter(position) ?? position;
+            if (SquareGrid != null)
+                return SquareGrid.GetNearestCellCenter(position, out cell);
+
+            cell = null;
+            return position;
+
         }
 
 
@@ -145,6 +152,7 @@ namespace VitoBarra.GridSystem.Square
         {
             return SquareGrid.GetWordPositionCenterCell(cell);
         }
+
 
         public void UpdateGridPosition()
         {
