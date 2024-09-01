@@ -7,14 +7,20 @@ using VitoBarra.GridSystem.Framework;
 
 namespace VitoBarra.GridSystem.Square
 {
-    public class SquareGrid<T>
+    /// <summary>
+    /// A class that define a grid of square cell and manage the logic for convert between world and grid position
+    /// This class exist to coordinate the Logic Data and the WordPositioning logic and provide a single interface
+    /// to interact with the grid with generic Datatype
+    /// </summary>
+    /// <typeparam name="TData"></typeparam>
+    internal class SquareGrid<TData>
     {
-        private SquareGridMap<T> LogicSquareGridMap;
-        private SquareGridToWord SquareGridToWord;
+        private readonly SquareGridData<TData> LogicSquareGridData;
+        private readonly SquareGridToWord SquareGridToWord;
 
-        public SquareGrid(SquareGridMap<T> logicSquareGridMap, SquareGridToWord squareGridToWord)
+        internal SquareGrid(SquareGridData<TData> logicSquareGridData, SquareGridToWord squareGridToWord)
         {
-            LogicSquareGridMap = logicSquareGridMap;
+            LogicSquareGridData = logicSquareGridData;
             SquareGridToWord = squareGridToWord;
         }
 
@@ -22,27 +28,34 @@ namespace VitoBarra.GridSystem.Square
             Vector2 cellOffset,
             ViewDimension viewDimension)
         {
-            LogicSquareGridMap = new SquareGridMap<T>(row, col);
+            LogicSquareGridData = new SquareGridData<TData>(row, col);
             SquareGridToWord = new SquareGridToWord(gridWordPositionHook, tileSize, cellOffset, viewDimension);
-            SquareGridToWord.SetDimension(viewDimension).SetBounds(row, col);
+            SquareGridToWord.SetDimension(viewDimension).ReShape(row, col);
         }
 
         #region SetUp
 
-        public SquareGrid<T> Resize(int row, int col)
+        public SquareGrid<TData> ReShape(SquareCell newShape)
         {
-            LogicSquareGridMap.Resize(row, col);
-            SquareGridToWord.SetBounds(row, col);
+            LogicSquareGridData.ReShape(newShape);
+            SquareGridToWord.ReShape(newShape);
+            return this;
+        }
+        public SquareGrid<TData> ReShape(int row, int col)
+        {
+            LogicSquareGridData.ReShape(row, col);
+            SquareGridToWord.ReShape(row, col);
             return this;
         }
 
-        public SquareGrid<T> SetWorldInformation(float tileSize, Vector2 cellOffset)
+
+        public SquareGrid<TData> SetWorldInformation(float tileSize, Vector2 cellOffset)
         {
             SquareGridToWord.SetTileSize(tileSize).SetCellOffset(cellOffset);
             return this;
         }
 
-        public SquareGrid<T> SetPositionHook(Vector2Hook gridWordPositionHook)
+        public SquareGrid<TData> SetPositionHook(Vector2Hook gridWordPositionHook)
         {
             SquareGridToWord.SetWordOffset(gridWordPositionHook);
             return this;
@@ -53,87 +66,64 @@ namespace VitoBarra.GridSystem.Square
 
         #region DataLogic
 
-        public T GetData(SquareCell cellCord)
+        public TData GetData(SquareCell cellCord)
         {
-            return LogicSquareGridMap.GetData(cellCord);
+            return LogicSquareGridData.GetData(cellCord);
         }
 
         public bool IsPositionFree(SquareCell cellCord)
         {
-            return LogicSquareGridMap.IsPositionFree(cellCord);
+            return LogicSquareGridData.IsPositionFree(cellCord);
         }
 
 
-        public void OccupiesPosition(T data, SquareCell cellCord, bool force = false)
+        public bool OccupiesCell(TData data, SquareCell cellCord, bool force = false)
         {
             try
             {
-                LogicSquareGridMap.OccupiesPosition(data, cellCord, force);
+                LogicSquareGridData.OccupiesPosition(data, cellCord, force);
+                return true;
             }
             catch (Exception e)
             {
                 Debug.LogWarning(e.Message + $"In position: {cellCord.Row},{cellCord.Column}");
-            }
-        }
-
-        private bool IsMovementPossible(SquareCell oldCell, SquareCell newCell, T data)
-        {
-            return !oldCell.Equals(newCell) && LogicSquareGridMap.IsValidCord(newCell) &&
-                   (LogicSquareGridMap.IsTheSame(newCell, data) ||
-                    LogicSquareGridMap.IsPositionFree(newCell));
-        }
-
-
-        private bool IsMovementPossible(IList<SquareCell> oldCells, IList<SquareCell> newPosition, T data)
-        {
-            var oldCellsData = new List<T>();
-            foreach (var cell in oldCells)
-            {
-                oldCellsData.Add(LogicSquareGridMap.GetData(cell));
-                LogicSquareGridMap.ClearPosition(cell);
+                return false;
             }
 
-            var isMovementPossible = !oldCells.Where((t, i) => !IsMovementPossible(t, newPosition[i], data)).Any();
-
-            for (int i = 0; i < oldCells.Count; i++)
-                LogicSquareGridMap.OccupiesPosition(oldCellsData[i], oldCells[i]);
-
-            return isMovementPossible;
         }
 
 
-        public bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> newCells, T data)
+
+
+        public bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> newCells)
         {
-            if (!IsMovementPossible(oldCells, newCells, data)) return false;
-
-            LogicSquareGridMap.MoveLogicObject(oldCells, newCells);
-
-            return true;
+            return LogicSquareGridData.MoveLogicObject(oldCells, newCells);
         }
 
-        public bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell, T data)
+        public bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell)
         {
-            if (!IsMovementPossible(oldCell, newCell, data)) return false;
-
-            LogicSquareGridMap.MoveLogicObject(oldCell, newCell);
-            return true;
+           return  LogicSquareGridData.MoveLogicObject(oldCell, newCell);
         }
 
 
         public void Delete(IList<SquareCell> cells)
         {
             foreach (var cell in cells)
-                LogicSquareGridMap.ClearPosition(cell);
+                LogicSquareGridData.ClearPosition(cell);
         }
 
         public void Delete(SquareCell cell)
         {
-            LogicSquareGridMap.ClearPosition(cell);
+            LogicSquareGridData.ClearPosition(cell);
         }
 
         public void ClearGrid()
         {
-            LogicSquareGridMap.ClearAllPosition();
+            LogicSquareGridData.ClearAllPosition();
+        }
+        public bool IsValidCord(SquareCell cell)
+        {
+            return LogicSquareGridData.IsValidCord(cell) && SquareGridToWord.IsValidCord(cell);
         }
 
         #endregion

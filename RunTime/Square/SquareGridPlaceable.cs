@@ -1,9 +1,5 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using VitoBarra.GridSystem.Framework;
 
 namespace VitoBarra.GridSystem.Square
@@ -49,9 +45,9 @@ namespace VitoBarra.GridSystem.Square
 
         protected override void SnapToGrid()
         {
-            var IsMovementPossibile =
-                GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(NearestCell), gameObject);
-            if (IsMovementPossibile)
+            var IsMovementPossible =
+                GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(NearestCell));
+            if (IsMovementPossible)
                 Cell = NearestCell;
             transform.position = GridManager.GetWordPositionCenterCell(Cell);
             OnCellSet?.Invoke(Cell);
@@ -64,6 +60,7 @@ namespace VitoBarra.GridSystem.Square
 
         private IList<SquareCell> GetAllOccupiedCell(SquareCell generatedCell)
         {
+            if (generatedCell == null) return null;
             var result = new List<SquareCell>();
 
 

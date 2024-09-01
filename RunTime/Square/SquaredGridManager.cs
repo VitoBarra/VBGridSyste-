@@ -13,7 +13,7 @@ namespace VitoBarra.GridSystem.Square
         private TraceableInt RowTrac, ColTrac ;
 
         [SerializeField] public int Row;
-         [SerializeField] public int Column;
+        [SerializeField] public int Column;
 
 
         private TraceableValue<Vector2> CellOffsetTrac;
@@ -53,15 +53,14 @@ namespace VitoBarra.GridSystem.Square
 
         #region Data
 
-        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells,
-            GameObject data)
+        public override bool MoveBetweenCells(IList<SquareCell> oldCells, IList<SquareCell> NewCells)
         {
-            return SquareGrid.MoveBetweenCells(oldCells, NewCells, data);
+            return SquareGrid.MoveBetweenCells(oldCells, NewCells);
         }
 
-        public override bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell, GameObject data)
+        public override bool MoveBetweenCells(SquareCell oldCell, SquareCell newCell)
         {
-            return SquareGrid.MoveBetweenCells(oldCell, newCell, data);
+            return SquareGrid.MoveBetweenCells(oldCell, newCell);
         }
 
         public override void DeleteAtCell(SquareCell cell)
@@ -101,12 +100,29 @@ namespace VitoBarra.GridSystem.Square
 
         public override void OccupiesCell(GameObject placeable, SquareCell cellToOccupy)
         {
-            SquareGrid.OccupiesPosition(placeable.gameObject, cellToOccupy);
+            SquareGrid.OccupiesCell(placeable.gameObject, cellToOccupy);
+        }
+
+        public void TryOccupiesCell(GameObject placeable, SquareCell cellToOccupy)
+        {
+            try
+            {
+                OccupiesCell(placeable.gameObject, cellToOccupy);
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning(e.Message + $"In position: {cellToOccupy.Row},{cellToOccupy.Column}");
+            }
         }
 
         public void ClearGrid()
         {
             SquareGrid.ClearGrid();
+        }
+
+        public override bool IsValidCord(SquareCell cell)
+        {
+            return SquareGrid.IsValidCord(cell);
         }
 
         #endregion
@@ -158,7 +174,7 @@ namespace VitoBarra.GridSystem.Square
 
             if (ColTrac.IsValueChanged || RowTrac.IsValueChanged)
             {
-                SquareGrid?.Resize(Row, Column);
+                SquareGrid?.ReShape(Row, Column);
                 OnResize?.Invoke(Row, Column);
             }
 

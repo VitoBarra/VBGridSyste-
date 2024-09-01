@@ -38,7 +38,6 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0, g: 0, b: 0, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -151,7 +150,7 @@ Transform:
   m_GameObject: {fileID: 306724252}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.25, y: 1.75, z: 0}
+  m_LocalPosition: {x: 0.25, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -297,7 +296,7 @@ Transform:
   m_GameObject: {fileID: 579050266}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.25, y: 0.25, z: 0}
+  m_LocalPosition: {x: 3.75, y: 0.25, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -441,7 +440,7 @@ Transform:
   m_GameObject: {fileID: 1305755988}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.35, y: -2.72, z: 0}
+  m_LocalPosition: {x: -1.68, y: -2.72, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -463,10 +462,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   DrawPlaceHolder: 1
   TileSize: 0.5
-  ViewType: 0
-  Width: 5
-  Height: 6
+  viewDimension: 0
+  Row: 7
+  Column: 19
   CellOffset: {x: 0, y: 0}
+  ShapeSize: {x: 0.2777778, y: 0.2777778, z: 0}
 --- !u!1 &1627716456
 GameObject:
   m_ObjectHideFlags: 0

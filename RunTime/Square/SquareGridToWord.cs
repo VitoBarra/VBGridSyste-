@@ -5,15 +5,15 @@ using VitoBarra.GridSystem.Framework;
 
 namespace VitoBarra.GridSystem.Square
 {
-    public class SquareGridToWord
+    internal class SquareGridToWord
     {
         private Vector2Hook WordOffset;
         private Vector2 CellNumberOffset;
         private ViewDimension ViewDimension;
         private float TileSize;
 
+        private SquareCell Shape;
 
-        int Column, Row;
 
         public SquareGridToWord(Vector2Hook wordOffset, float tileSize, Vector2 cellNumberOffset = default,
             ViewDimension viewDimension = ViewDimension.D2)
@@ -25,15 +25,24 @@ namespace VitoBarra.GridSystem.Square
         }
 
 
-        public SquareGridToWord SetBounds(int row, int col)
+        public SquareGridToWord ReShape(int row, int col)
         {
-            if (row <= 0) row = 1;
-            if (col <= 0) row = 1;
-            Column = col;
-            Row = row;
+            var newRow = row <= 0 ? 1 : row;
+            var newCol = col <= 0 ? 1 : col;
+            Shape = new SquareCell(newRow, newCol);
             return this;
+
         }
 
+        public SquareGridToWord ReShape(SquareCell newShape)
+            {
+        return ReShape(newShape.Row, newShape.Column);
+        }
+
+        public bool IsValidCord(SquareCell cell)
+        {
+            return cell.Row >= 0 && cell.Row < Shape.Row && cell.Column >= 0 && cell.Column < Shape.Column;
+        }
 
         public SquareGridToWord SetTileSize(float tileSize)
         {
@@ -93,11 +102,11 @@ namespace VitoBarra.GridSystem.Square
         {
             var col = Math.Clamp(
                 Mathf.FloorToInt((worldPosition.x - CellNumberOffset.x * TileSize - WordOffset.i) / TileSize), 0,
-                Column - 1);
+                Shape.Column - 1);
             var refAxis = ViewDimension == ViewDimension.D2 ? worldPosition.y : worldPosition.z;
             var row = Math.Clamp(Mathf.FloorToInt((refAxis - CellNumberOffset.y * TileSize - WordOffset.j) / TileSize),
                 0,
-                Row - 1);
+                Shape.Row - 1);
             return new SquareCell(row, col);
         }
     }
