@@ -33,9 +33,9 @@ namespace VitoBarra.GridSystem.Framework
             UpDateCellAndPosition();
         }
 
-        private void UpDateCellAndPosition()
+        public override bool UpDateCellAndPosition()
         {
-            UpDateCellAndPosition(GridManager);
+            return UpDateCellAndPosition(GridManager);
         }
 
 
@@ -46,10 +46,10 @@ namespace VitoBarra.GridSystem.Framework
         }
 
 
-        protected override void SnapToGrid()
+        public override void SnapToGrid()
         {
-            if (SnappablePivo == null) return;
-            transform.position = GridManager.GetWordPositionCenterCell(Cell);
+            if (SnappablePivo is null) return;
+            SnappablePivo.SnapToGrid();
             OnCellSet?.Invoke(Cell);
         }
 

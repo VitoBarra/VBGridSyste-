@@ -12,11 +12,11 @@ namespace VitoBarra.GridSystem.Framework
         public Action<TCell> OnCellSet;
 
 
-        protected abstract void SnapToGrid();
+        public abstract void SnapToGrid();
         protected abstract void HoldOnGrid();
 
 
-        protected bool UpDateCellAndPosition<TData>(GridManager<TCell,TData> gridManager)
+        public bool UpDateCellAndPosition<TData>(GridManager<TCell,TData> gridManager)
         {
             if (gridManager is null) return false;
             var newPostion = gridManager.GetNearestCellCenter(transform.position, out var cell);
@@ -25,6 +25,9 @@ namespace VitoBarra.GridSystem.Framework
             Cell = cell;
             return true;
         }
+
+        public abstract bool UpDateCellAndPosition();
+
 
     }
 }

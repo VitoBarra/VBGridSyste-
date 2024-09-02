@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using UnityEngine;
 using VitoBarra.GridSystem.Framework;
+using Vector3 = System.Numerics.Vector3;
 
 namespace VitoBarra.GridSystem.Square
 {
@@ -13,10 +15,10 @@ namespace VitoBarra.GridSystem.Square
 
         public int VerticalMaxSpan = 1;
         public int HorizontalMaxSpan = 1;
-        [SerializeField]private List<bool> PositionBitMap= new List<bool>();
+        [SerializeField]
+        private List<bool> PositionBitMap= new List<bool>();
+        
 
-
-        private SquareCell NearestCell => GridManager.GetNearestCell(transform.position);
 
         private void Awake()
         {
@@ -50,7 +52,7 @@ namespace VitoBarra.GridSystem.Square
             GridManager?.DeleteAtCell(GetAllOccupiedCell());
         }
 
-        bool UpDateCellAndPosition()
+        public override bool UpDateCellAndPosition()
         {
             return UpDateCellAndPosition(GridManager);
         }
@@ -60,12 +62,13 @@ namespace VitoBarra.GridSystem.Square
             transform.position = GridManager.GetWordPositionCenterCell(Cell);
         }
 
-        protected override void SnapToGrid()
+        public override void SnapToGrid()
         {
+            var nearestCell =GridManager.GetNearestCell(transform.position);
             var isMovementPossible =
-                GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(NearestCell));
+                GridManager.MoveBetweenCells(GetAllOccupiedCell(), GetAllOccupiedCell(nearestCell));
             if (isMovementPossible)
-                Cell = NearestCell;
+                Cell = nearestCell;
             transform.position = GridManager.GetWordPositionCenterCell(Cell);
             OnCellSet?.Invoke(Cell);
         }
@@ -106,8 +109,9 @@ namespace VitoBarra.GridSystem.Square
 
         private void ClearChildren()
         {
-            for (int i = 0; i < transform.childCount; i++)
-                DestroyImmediate(transform.GetChild(i).gameObject);
+            var totalchlids = transform.childCount;
+            for (int i = 0; i < totalchlids; i++)
+                DestroyImmediate(transform.GetChild(0).gameObject);
         }
         private void OnDestroy()
         {
@@ -131,6 +135,13 @@ namespace VitoBarra.GridSystem.Square
                         PositionBitMap.Add(true);
                     break;
             }
+
+        }
+
+        public void OnDrawGizmos()
+        {
+            Gizmos.color = Color.magenta;
+            Gizmos.DrawWireSphere(transform.position,  0.3f);
         }
     }
 }
